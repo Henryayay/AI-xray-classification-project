@@ -1,0 +1,58 @@
+{
+  "task": "task1",
+  "experiment": "probe_rad_dino",
+  "run": "seed0",
+  "kind": "linear_probe",
+  "seed": 0,
+  "train_fraction": 1.0,
+  "shots": null,
+  "final": true,
+  "limit": 0,
+  "config": {
+    "name": "probe_rad_dino",
+    "kind": "linear_probe",
+    "tasks": [
+      "task1",
+      "task2"
+    ],
+    "encoder": "rad_dino",
+    "seeds": [
+      0
+    ],
+    "train_fractions": [
+      0.1,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "perturbations": [
+      "border_mask",
+      "centre_mask",
+      "gamma_low",
+      "gamma_high",
+      "noise",
+      "jpeg"
+    ]
+  },
+  "config_hash": "73e4af3082a2",
+  "config_path": "configs/probe_rad_dino.yaml",
+  "git_commit": "2c2221549719da9393bab0e2d5bf12beacc5899d-dirty",
+  "dataset_id": "Henryayay/POLCOVID_task1_70_10_20",
+  "dataset_revision": "435f00fc15744fc2cedfea9efcdb041f1d93113b",
+  "environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "platform": "Linux-6.12.94+-x86_64-with-glibc2.39",
+    "packages": {
+      "torch": "2.14.1+cpu",
+      "torchvision": "0.29.1+cpu",
+      "transformers": "4.57.3",
+      "datasets": "4.3.0",
+      "numpy": "2.5.2",
+      "scikit-learn": "1.9.1"
+    }
+  },
+  "wall_seconds": 2.68780779838562,
+  "train_size": 1596,
+  "C": 0.01,
+  "val_nll": 0.3377337070588398
+}
