@@ -1,0 +1,15 @@
+name: cnn_xrv_densenet121
+kind: cnn
+tasks: [task1, task2]
+arch: xrv_densenet121
+image_size: 224
+batch_size: 32
+epochs: 30
+patience: 7
+warmup_epochs: 1
+weight_decay: 1.0e-4
+lr_grid: [1.0e-5, 1.0e-4, 3.0e-4]
+sweep_seed: 1000
+seeds: [0, 1, 2, 3, 4]
+num_workers: 4
+perturbations: [border_mask, centre_mask, gamma_low, gamma_high, noise, jpeg]

@@ -1,0 +1,24 @@
+task,family,notebook,shots,accuracy_pct,recall_negative,recall_positive,protocol_issues
+task1,cnn,legacy/CNN/Task 1/Task1_Resnet.ipynb,,82.02,0.85,0.79,single seed; resize without aspect preservation; checkpoint chosen on val loss
+task2,cnn,legacy/CNN/Task 2/Task2_Resnet.ipynb,,76.32,0.75,0.78,single seed; resize without aspect preservation; checkpoint chosen on val loss
+task1,finetune,legacy/Fine-tune/Task 1/Task1_FT_ver1_0_0.ipynb,,87.94,0.9,0.86,single seed; evaluation prompt differs from training prompt; free-text parsing; 4-bit base
+task2,finetune,legacy/Fine-tune/Task 2/Task2_FT_ver1_0_0.ipynb,,70.83,0.78,0.64,single seed; evaluation prompt differs from training prompt; free-text parsing; 4-bit base
+task1,icl_base,legacy/ICL/Task1/Task_1_base_ver1_0_2.ipynb,,57.02,0.29,0.85,free-text parsing; single run
+task1,icl_nshot,legacy/ICL/Task1/Task_1_n_shot_ver1_0_0.ipynb,2.0,54.61,0.14,0.95,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task1,icl_nshot,legacy/ICL/Task1/Task_1_n_shot_ver1_0_2.ipynb,2.0,56.36,0.19,0.93,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task1,icl_nshot,legacy/ICL/Task1/Task_1_n_shot_ver1_0_2.ipynb,4.0,64.69,0.54,0.75,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task1,icl_nshot,legacy/ICL/Task1/Task_1_n_shot_ver1_0_2.ipynb,6.0,70.83,0.71,0.71,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task1,icl_nshot,legacy/ICL/Task1/Task_1_n_shot_ver1_0_2.ipynb,8.0,64.04,0.56,0.72,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task1,icl_nshot,legacy/ICL/Task1/Task_1_n_shot_ver1_0_2.ipynb,10.0,64.47,0.74,0.55,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_base,legacy/ICL/Task2/Task_2_base_ver1_0_0.ipynb,,50.22,1.0,0.0,free-text parsing; single run
+task2,icl_base,legacy/ICL/Task2/Task_2_base_ver1_0_2.ipynb,,50.0,1.0,0.0,free-text parsing; single run
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_0.ipynb,2.0,50.0,1.0,0.0,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_0.ipynb,4.0,49.78,0.92,0.08,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_0.ipynb,6.0,50.0,1.0,0.0,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_0.ipynb,8.0,50.44,0.54,0.47,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_0.ipynb,10.0,49.56,0.97,0.02,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_2.ipynb,2.0,54.61,0.19,0.9,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_2.ipynb,4.0,52.85,0.93,0.13,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_2.ipynb,6.0,50.0,0.99,0.01,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_2.ipynb,8.0,50.0,1.0,0.0,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base
+task2,icl_nshot,legacy/ICL/Task2/Task_2_n_shot_ver1_0_2.ipynb,10.0,50.22,1.0,0.0,one exemplar draw per shot count; duplicated BOS token; free-text parsing; 4-bit base

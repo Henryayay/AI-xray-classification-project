@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install CPU dependencies
+        run: |
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-dev.txt
+      - name: Lint
+        run: ruff check src scripts tests
+      - name: Unit tests
+        run: pytest -q
+      - name: Pipeline test on synthetic predictions
+        run: |
+          python scripts/make_synthetic_results.py --out /tmp/synth
+          cp -r results/audit /tmp/synth/audit
+          python scripts/analyze.py --results /tmp/synth --n-boot 200
+          python scripts/make_tables.py --results /tmp/synth --out /tmp/synth_tables
+          python scripts/make_figures.py --results /tmp/synth --out /tmp/synth_figs
+      - name: Tables from committed results are up to date
+        run: |
+          python scripts/make_tables.py
+          git diff --exit-code paper/generated

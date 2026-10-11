@@ -1,0 +1,9 @@
+name: vlm_medgemma_zeroshot
+kind: vlm_zeroshot
+tasks: [task1, task2]
+model_id: unsloth/medgemma-4b-it
+model_revision: 9118034dee0620324cce8f2f6116aabd9b594134
+seeds: [0]
+content_free: per_draw
+also_generate: true
+perturbations: [border_mask, centre_mask, gamma_low, gamma_high, noise, jpeg]

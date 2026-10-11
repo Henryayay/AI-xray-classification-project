@@ -1,0 +1,35 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Preliminary single-run results from the original notebooks, parsed automatically from their stored outputs (\texttt{scripts/extract\_legacy\_results.py}). These runs predate the protocol of this paper and have known issues (Section~\ref{sec:legacy}); they are reported for transparency, not as findings.}
+\label{tab:legacy}
+\begin{tabular}{clcccc}
+\toprule
+Task & Method & Notebook & Acc.\ (\%) & Recall$_{neg}$ & Recall$_{pos}$\\
+\midrule
+1 & ResNet-50 & orig. & 82.02 & 0.850 & 0.790 \\
+1 & Gemma-3-4B LoRA & v1.0.0 & 87.94 & 0.900 & 0.860 \\
+1 & Gemma-3-4B zero-shot & v1.0.2 & 57.02 & 0.290 & 0.850 \\
+1 & Gemma-3-4B ICL, 2 shots & v1.0.0 & 54.61 & 0.140 & 0.950 \\
+1 & Gemma-3-4B ICL, 2 shots & v1.0.2 & 56.36 & 0.190 & 0.930 \\
+1 & Gemma-3-4B ICL, 4 shots & v1.0.2 & 64.69 & 0.540 & 0.750 \\
+1 & Gemma-3-4B ICL, 6 shots & v1.0.2 & 70.83 & 0.710 & 0.710 \\
+1 & Gemma-3-4B ICL, 8 shots & v1.0.2 & 64.04 & 0.560 & 0.720 \\
+1 & Gemma-3-4B ICL, 10 shots & v1.0.2 & 64.47 & 0.740 & 0.550 \\
+2 & ResNet-50 & orig. & 76.32 & 0.750 & 0.780 \\
+2 & Gemma-3-4B LoRA & v1.0.0 & 70.83 & 0.780 & 0.640 \\
+2 & Gemma-3-4B zero-shot & v1.0.0 & 50.22 & 1.000 & 0.000 \\
+2 & Gemma-3-4B zero-shot & v1.0.2 & 50.00 & 1.000 & 0.000 \\
+2 & Gemma-3-4B ICL, 2 shots & v1.0.0 & 50.00 & 1.000 & 0.000 \\
+2 & Gemma-3-4B ICL, 4 shots & v1.0.0 & 49.78 & 0.920 & 0.080 \\
+2 & Gemma-3-4B ICL, 6 shots & v1.0.0 & 50.00 & 1.000 & 0.000 \\
+2 & Gemma-3-4B ICL, 8 shots & v1.0.0 & 50.44 & 0.540 & 0.470 \\
+2 & Gemma-3-4B ICL, 10 shots & v1.0.0 & 49.56 & 0.970 & 0.020 \\
+2 & Gemma-3-4B ICL, 2 shots & v1.0.2 & 54.61 & 0.190 & 0.900 \\
+2 & Gemma-3-4B ICL, 4 shots & v1.0.2 & 52.85 & 0.930 & 0.130 \\
+2 & Gemma-3-4B ICL, 6 shots & v1.0.2 & 50.00 & 0.990 & 0.010 \\
+2 & Gemma-3-4B ICL, 8 shots & v1.0.2 & 50.00 & 1.000 & 0.000 \\
+2 & Gemma-3-4B ICL, 10 shots & v1.0.2 & 50.22 & 1.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
