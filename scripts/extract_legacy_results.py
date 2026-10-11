@@ -71,8 +71,8 @@ def main():
     rows = []
     for nb in sorted(LEGACY.rglob("*.ipynb")):
         task = "task1" if re.search(r"Task ?_?1", str(nb)) else "task2"
-        classes = ("Normal", "Pneumonia") if task == "task1" else ("Non-COVID Pneumonia",
-                                                                    "COVID-19", "Pneumonia", "COVID")
+        classes = (("Normal", "Pneumonia") if task == "task1"
+                   else ("Non-COVID Pneumonia", "COVID-19", "Pneumonia", "COVID"))
         fam = family(nb)
         for cell_shots, text in outputs(nb):
             for m in re.finditer(r"(?:(\d+)-shot Accuracy|Accuracy|ACCURACY)[^:\n]*:\s*([\d.]+)%",

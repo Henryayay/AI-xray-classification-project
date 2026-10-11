@@ -341,8 +341,8 @@ def robustness_table(S, out):
                 for p in perts:
                     x = d[d.perturbation == p]
                     cells.append("--" if x.empty else f"{x.auroc_mean.iloc[0]:.3f}")
-                rows += (f"{t[-1]} & {NAMES[exp]} & {f3(None if clean is None else clean.auroc_mean)}"
-                         f" & " + " & ".join(cells) + " \\\\\n")
+                c0 = f3(None if clean is None else clean.auroc_mean)
+                rows += f"{t[-1]} & {NAMES[exp]} & {c0} & " + " & ".join(cells) + " \\\\\n"
     write(out, "tab_robustness.tex", table(
         "Test AUROC (mean over seeds) under test-time perturbations. ``centre\\_mask'' removes "
         "the central 70\\% of the image (most of the lung fields); AUROC well above 0.5 after "

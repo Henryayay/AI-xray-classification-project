@@ -209,9 +209,9 @@ def train_cnn(ds, cfg, seed, train_indices, device, log=print):
 
 
 def eval_loader(split, arch, size, bs, perturbation="none", workers=4):
-    return DataLoader(HFImageDataset(split, np.arange(len(split)), make_transform(arch, size, False),
-                                     perturbation), batch_size=bs, shuffle=False,
-                      num_workers=workers)
+    ds = HFImageDataset(split, np.arange(len(split)), make_transform(arch, size, False),
+                        perturbation)
+    return DataLoader(ds, batch_size=bs, shuffle=False, num_workers=workers)
 
 
 class GradCAM:
