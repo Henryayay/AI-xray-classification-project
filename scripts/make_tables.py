@@ -60,7 +60,7 @@ def pm(mean, sd, n=None):
 
 def pending(ncol, what):
     return (f"\\multicolumn{{{ncol}}}{{l}}{{\\textit{{Pending: {what} not yet run; generated "
-            "automatically once results exist.}}}}\\\\\n")
+            "automatically once results exist.}}\\\\\n")
 
 
 def write(out, name, body):
@@ -89,7 +89,7 @@ def audit_tables(res, out, macros):
         d1 = v["duplicates"]["near_identical_or_exact"]
         d2 = v["duplicates"]["highly_similar_or_closer"]
         ph = v["phash_threshold_check"]
-        rows += (f"{TASK_TITLE[t]} & {v['n_images']} & {v['unique_sha256']} & {d1['n_pairs']} & "
+        rows += (f"Task {t[-1]} & {v['n_images']} & {v['unique_sha256']} & {d1['n_pairs']} & "
                  f"{d1['test_images_with_train_match']} & {d2['n_pairs']} & "
                  f"{d2['label_conflicts']} & {d2['test_images_with_train_match']} & "
                  f"{ph['n_pairs']} ({ph['label_conflicts']}) \\\\\n")
