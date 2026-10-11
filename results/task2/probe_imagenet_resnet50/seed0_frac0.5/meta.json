@@ -1,0 +1,58 @@
+{
+  "task": "task2",
+  "experiment": "probe_imagenet_resnet50",
+  "run": "seed0_frac0.5",
+  "kind": "linear_probe",
+  "seed": 0,
+  "train_fraction": 0.5,
+  "shots": null,
+  "final": true,
+  "limit": 0,
+  "config": {
+    "name": "probe_imagenet_resnet50",
+    "kind": "linear_probe",
+    "tasks": [
+      "task1",
+      "task2"
+    ],
+    "encoder": "imagenet_resnet50",
+    "seeds": [
+      0
+    ],
+    "train_fractions": [
+      0.1,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "perturbations": [
+      "border_mask",
+      "centre_mask",
+      "gamma_low",
+      "gamma_high",
+      "noise",
+      "jpeg"
+    ]
+  },
+  "config_hash": "c279a23c3a78",
+  "config_path": "configs/probe_imagenet_resnet50.yaml",
+  "git_commit": "56d13e3844c3cdba3aee443bd8ccf7fb6de70b9d-dirty",
+  "dataset_id": "Henryayay/POLCOVID_task2_70_10_20",
+  "dataset_revision": "6178041d37e25b33aaaf3d1356072dcbcc45af45",
+  "environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "platform": "Linux-6.12.94+-x86_64-with-glibc2.39",
+    "packages": {
+      "torch": "2.14.1+cpu",
+      "torchvision": "0.29.1+cpu",
+      "transformers": "4.57.3",
+      "datasets": "4.3.0",
+      "numpy": "2.5.2",
+      "scikit-learn": "1.9.1"
+    }
+  },
+  "wall_seconds": 2.628232002258301,
+  "train_size": 798,
+  "C": 0.001,
+  "val_nll": 0.5477596896357442
+}
