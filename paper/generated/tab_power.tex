@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\caption{What the fixed test set ($n=456$; 228 per class) can resolve. CI: 95\% half-width of a single AUROC (Hanley--McNeil). MDE: minimum detectable difference between two correlated AUROCs at 80\% power, for inter-model score correlation $r$, at $\alpha=0.05$ and at the Holm worst case $\alpha/10$.}
+\label{tab:power}
+\begin{tabular}{ccccc}
+\toprule
+AUROC & CI half-width & MDE ($r{=}0.5$) & MDE ($r{=}0.5$, $\alpha/10$) & MDE ($r{=}0.7$)\\
+\midrule
+0.60 & 0.052 & 0.074 & 0.096 & 0.057 \\
+0.70 & 0.048 & 0.068 & 0.089 & 0.053 \\
+0.80 & 0.041 & 0.058 & 0.076 & 0.045 \\
+0.85 & 0.036 & 0.051 & 0.066 & 0.039 \\
+0.90 & 0.029 & 0.042 & 0.055 & 0.032 \\
+0.95 & 0.021 & 0.030 & 0.039 & 0.023 \\
+\bottomrule
+\end{tabular}
+\end{table}

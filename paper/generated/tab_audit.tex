@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Pixel-level audit of the published splits. Near-identical: Pearson $r\geq0.99$ between normalised $256\times256$ images; highly similar: $r\geq0.95$. ``Test'' columns count test images with a matching training image. The last column shows how many pairs a 64-bit perceptual hash flags at Hamming distance $\leq4$ (in parentheses: pairs with different labels), illustrating why hashing alone is unreliable for chest radiographs.}
+\label{tab:audit}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Task & Images & Unique & \multicolumn{2}{c}{Near-identical} & \multicolumn{3}{c}{Highly similar} & pHash$\leq$4 \\
+ & & & pairs & test & pairs & label conflicts & test & pairs\\
+\midrule
+Task 1 (Normal vs.\ Pneumonia) & 2280 & 2280 & 0 & 0 & 21 & 5 & 8 & 293 (119) \\
+Task 2 (Non-COVID pneumonia vs.\ COVID-19) & 2280 & 2279 & 5 & 0 & 25 & 2 & 9 & 176 (61) \\
+\bottomrule
+\end{tabular}
+\end{table}

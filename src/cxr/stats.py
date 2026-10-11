@@ -104,7 +104,8 @@ def paired_bootstrap(y, logits_a, logits_b, metric="auroc", thresholds_a=None,
     two methods may have different numbers of seeds. Each replicate resamples
     cases once and evaluates every seed of both methods on the same resample,
     so the interval reflects case-sampling uncertainty of the seed-mean
-    difference. The two-sided p-value is ``2 * min(P(d <= 0), P(d >= 0))``.
+    difference. The two-sided p-value is ``2 * min(P(d <= 0), P(d >= 0))`` with the
+    add-one correction, so it is never reported below ``2 / (n_boot + 1)``.
     """
     y = np.asarray(y)
     la = np.atleast_2d(np.asarray(logits_a, float))
@@ -122,7 +123,8 @@ def paired_bootstrap(y, logits_a, logits_b, metric="auroc", thresholds_a=None,
         for idx in stratified_bootstrap_indices(y, n_boot, seed)
     ])
     lo, hi = np.percentile(diffs, [100 * alpha / 2, 100 * (1 - alpha / 2)])
-    p = min(1.0, 2 * min(np.mean(diffs <= 0), np.mean(diffs >= 0)))
+    B = len(diffs)
+    p = min(1.0, 2 * min((np.sum(diffs <= 0) + 1) / (B + 1), (np.sum(diffs >= 0) + 1) / (B + 1)))
     return {"diff": float(observed), "ci_low": float(lo), "ci_high": float(hi), "p": float(p),
             "n_boot": int(n_boot)}
 
