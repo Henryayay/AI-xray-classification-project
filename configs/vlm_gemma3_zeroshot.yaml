@@ -1,0 +1,9 @@
+name: vlm_gemma3_zeroshot
+kind: vlm_zeroshot
+tasks: [task1, task2]
+model_id: unsloth/gemma-3-4b-it
+model_revision: bf46152c47f5dd20b896357cb51abc4c03b8ee8c
+seeds: [0]
+content_free: per_draw
+also_generate: true
+perturbations: [border_mask, centre_mask, gamma_low, gamma_high, noise, jpeg]

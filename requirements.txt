@@ -1,0 +1,18 @@
+# Core (CPU-capable): data, audit, CNN/linear-probe experiments, statistics, paper tables.
+# Versions match the original Colab environment where they overlap.
+numpy>=1.26,<3
+pandas>=2.1
+pyarrow>=14
+scipy>=1.11
+scikit-learn>=1.4
+datasets==4.3.0
+fsspec==2025.9.0
+huggingface_hub==0.36.2
+transformers==4.57.3
+pillow>=10
+imagehash==4.3.2
+pyyaml>=6
+matplotlib>=3.8
+tqdm>=4.66
+torch>=2.4
+torchvision>=0.19

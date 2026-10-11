@@ -1,0 +1,19 @@
+name: vlm_medgemma_lora
+kind: vlm_lora
+tasks: [task1, task2]
+model_id: unsloth/medgemma-4b-it
+model_revision: 9118034dee0620324cce8f2f6116aabd9b594134
+load_in_4bit: false
+finetune_vision_layers: true
+lora_r: 32
+lora_alpha: 32
+lora_dropout: 0.05
+batch_size: 8
+grad_accum: 2
+epochs: 10
+lr: 2.0e-4
+patience: 5
+seeds: [0, 1, 2, 3, 4]
+content_free: per_draw
+also_generate: true
+perturbations: [border_mask, centre_mask, gamma_low, gamma_high, noise, jpeg]
