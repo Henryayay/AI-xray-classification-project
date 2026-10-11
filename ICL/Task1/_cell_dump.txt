@@ -1,0 +1,567 @@
+
+
+===== CELL 9 =====
+# ==========================================
+# 1. SETUP & IMPORTS
+# ==========================================
+# from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+# import seaborn as sns
+# import matplotlib.pyplot as plt
+# from tqdm import tqdm
+# import torch
+
+# # Ensure model is in inference mode (Unsloth method)
+# FastVisionModel.for_inference(model)
+
+# # Define your labels again just to be safe
+# LABEL_MAP = {
+#     0: "Normal",
+#     1: "Pneumonia",
+# }
+
+# # ==========================================
+# # 2. INFERENCE LOOP (Test all 40 images)
+# # ==========================================
+# y_true = []
+# y_pred = []
+
+# print("Starting evaluation on test images...")
+
+# for sample in tqdm(test_ds):
+#     # A. Get the actual Label (Ground Truth)
+#     actual_label = LABEL_MAP[sample["label"]]
+#     y_true.append(actual_label)
+
+#     # B. Prepare the Image & Instruction
+#     image = sample["image"]
+#     instruction = (
+#     "You are an expert radiologist. Analyze this chest X-ray and classify it as 'Normal' or 'Pneumonia'. Output only the diagnosis."
+# )
+
+#     messages = [
+#         {
+#             "role": "user",
+#             "content": [
+#                 {"type": "text", "text": instruction},
+#                 {"type": "image"} # Placeholder
+#             ],
+#         }
+#     ]
+
+#     # C. Process Inputs
+#     input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
+#     inputs = processor(
+#         text=input_text,
+#         images=image,
+#         add_special_tokens=False,
+#         return_tensors="pt"
+#     ).to("cuda")
+
+#     # D. Generate Prediction
+#     output = model.generate(
+#         **inputs,
+#         max_new_tokens=30,
+#         temperature=0.01,   # Low temp = more strict/consistent
+#         use_cache=True
+#     )
+
+#     # E. Decode the answer
+#     # We slice [:, inputs.input_ids.shape[1]:] to remove the prompt and keep only the answer
+#     response = processor.batch_decode(output[:, inputs.input_ids.shape[1]:], skip_special_tokens=True)[0]
+
+
+#     if "Pneumonia" in response:
+#         pred_label = "Pneumonia"
+#     elif "Normal" in response:
+#         pred_label = "Normal"
+#     else:
+#         pred_label = "Error"
+
+#     y_pred.append(pred_label)
+
+
+# # ==========================================
+# # CALCULATE METRICS & PLOT
+# # ==========================================
+
+# # 1. Calculate Accuracy
+# acc = accuracy_score(y_true, y_pred)
+# accuracy_pct = acc * 100
+
+# # 2. Print Text Reports
+# print(f"\n✅ Base Gemma3 Task1 Accuracy: {accuracy_pct:.2f}%")
+# print("\n📊 Detailed Report:")
+# print(classification_report(y_true, y_pred, labels=["Normal", "Pneumonia"]))
+
+
+# # C. Confusion Matrix
+# cm = confusion_matrix(y_true, y_pred, labels=["Normal", "Pneumonia"])
+
+# plt.figure(figsize=(6, 5))
+# sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+#             xticklabels=["Normal", "Pneumonia"],
+#             yticklabels=["Normal", "Pneumonia"])
+# plt.xlabel('Predicted by AI')
+# plt.ylabel('Actual Truth')
+# plt.title('Confusion Matrix')
+# plt.show()
+
+
+
+===== CELL 11 =====
+from torch.utils.data import DataLoader
+import torch
+from tqdm import tqdm
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+from unsloth import FastVisionModel
+
+# Define the labels used in the dataset mapping
+LABEL_MAP = {
+    0: "Normal",
+    1: "Pneumonia",
+}
+
+# Ensure model is in inference mode
+FastVisionModel.for_inference(model)
+
+# Define batch size (Increase to 8 or 16 if using premium GPUs like L4/A100)
+BATCH_SIZE = 8
+
+y_true_batched = []
+y_pred_batched = []
+
+print(f"Starting batched evaluation (Batch Size: {BATCH_SIZE})...")
+
+# We process in steps of BATCH_SIZE
+for i in tqdm(range(0, len(test_ds), BATCH_SIZE)):
+    batch = test_ds[i : i + BATCH_SIZE]
+
+    # Collect ground truths
+    for lbl in batch["label"]:
+        y_true_batched.append(LABEL_MAP[lbl])
+
+    # Prepare batched prompt messages
+    batch_messages = []
+    batch_images = []
+    for img in batch["image"]:
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "You are an expert radiologist. Analyze this chest X-ray and classify it as 'Normal' or 'Pneumonia'. Output only the diagnosis."
+                    },
+                    {"type": "image"}
+                ],
+            }
+        ]
+        input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
+        batch_messages.append(input_text)
+        # Wrap each PIL image in a list because Gemma3Processor expects a list of images per prompt
+        batch_images.append([img])
+
+    # Process batched inputs together using native processor capabilities
+    inputs = processor(
+        text=batch_messages,
+        images=batch_images,
+        add_special_tokens=False,
+        return_tensors="pt",
+        padding=True
+    ).to("cuda")
+
+    # Perform batched generation securely without tracking gradients
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=15, # Reduced since we only expect 'Normal' or 'Pneumonia'
+            temperature=0.01,
+            use_cache=True
+        )
+
+    # Decode outputs
+    prompt_len = inputs.input_ids.shape[1]
+    responses = processor.batch_decode(outputs[:, prompt_len:], skip_special_tokens=True)
+
+    # Map responses back to labels
+    for response in responses:
+        if "Pneumonia" in response:
+            pred_label = "Pneumonia"
+        elif "Normal" in response:
+            pred_label = "Normal"
+        else:
+            pred_label = "Error"
+        y_pred_batched.append(pred_label)
+
+# ==========================================
+# CALCULATE METRICS & PLOT (Batched Version)
+# ==========================================
+
+# 1. Calculate Accuracy
+acc_batched = accuracy_score(y_true_batched, y_pred_batched)
+accuracy_pct_batched = acc_batched * 100
+
+# 2. Print Text Reports
+print(f"\n✅ Batched Gemma3 Task1 Accuracy: {accuracy_pct_batched:.2f}%")
+print("\n📊 Detailed Report:")
+print(classification_report(y_true_batched, y_pred_batched, labels=["Normal", "Pneumonia"]))
+
+# 3. Confusion Matrix
+cm_batched = confusion_matrix(y_true_batched, y_pred_batched, labels=["Normal", "Pneumonia"])
+
+plt.figure(figsize=(6, 5))
+sns.heatmap(cm_batched, annot=True, fmt='d', cmap='Blues',
+            xticklabels=["Normal", "Pneumonia"],
+            yticklabels=["Normal", "Pneumonia"])
+plt.xlabel('Predicted by AI (Batched)')
+plt.ylabel('Actual Truth')
+plt.title('Confusion Matrix (Batched)')
+plt.show()
+
+record_and_save_run(
+    y_true_batched, y_pred_batched,
+    setup="batched",
+    model="Gemma3-4B",
+    accuracy_pct=accuracy_pct_batched,
+)
+
+
+===== CELL 12 =====
+### 📤 Exporting Results
+* Saves all true labels and model predictions into a standardized Excel/CSV table.
+* Automatically triggers a file download to your machine.
+
+
+===== CELL 13 =====
+import pandas as pd
+from google.colab import files
+import os
+
+# ==========================================
+# CELL: UNIFIED SAVE PREDICTIONS TO CSV
+# ==========================================
+
+# 1. Determine which results to save based on what's in memory
+if 'y_true_batched' in locals() and 'y_pred_batched' in locals():
+    y_t, y_p = y_true_batched, y_pred_batched
+    filename = "batched_gemma3_task1_predictions.csv"
+    print("Detected batched inference results.")
+elif 'y_true' in locals() and 'y_pred' in locals():
+    y_t, y_p = y_true, y_pred
+    filename = "base_gemma3_task1_predictions.csv"
+    print("Detected standard inference results.")
+else:
+    raise ValueError("No inference results found. Please run one of the inference loops first.")
+
+# 2. Define Robust Map
+NAME_TO_ID = {
+    "Normal": 0,
+    "Pneumonia": 1
+}
+
+# 3. Convert Names to IDs safely
+y_true_ids = []
+y_pred_ids = []
+
+for val in y_t:
+    clean_val = str(val).strip()
+    y_true_ids.append(NAME_TO_ID.get(clean_val, -1))
+
+for val in y_p:
+    clean_val = str(val).strip()
+    y_pred_ids.append(NAME_TO_ID.get(clean_val, -1))
+
+# 4. Create DataFrame
+df_results = pd.DataFrame({
+    "Index": range(len(y_t)),
+    "True_Label_ID": y_true_ids,
+    "Predicted_Label_ID": y_pred_ids,
+    "True_Label_Name": y_t,
+    "Predicted_Label_Name": y_p
+})
+
+# 5. Save to CSV
+df_results.to_csv(filename, index=False)
+print(f"Success! Saved predictions to: {filename}")
+print("-" * 30)
+print(df_results.head())
+
+# 6. Sanity Check
+errors = df_results[df_results["Predicted_Label_ID"] == -1]
+if len(errors) > 0:
+    print(f"\nWARNING: {len(errors)} predictions could not be mapped to IDs!")
+    print(errors["Predicted_Label_Name"].unique())
+else:
+    print("\nVerification Passed: All predictions mapped correctly.")
+
+# 7. Download the file
+if os.path.exists(filename):
+    print(f'\nInitiating download for {filename}...')
+    files.download(filename)
+else:
+    print(f'\nError: {filename} not found.')
+
+
+===== CELL 26 =====
+# from unsloth import FastVisionModel
+# import torch
+#
+# # Let's try loading Qwen2.5-VL-7B-Instruct as an upgrade!
+# # Make sure to restart your session first to clear GPU memory from Gemma-3.
+#
+# MODEL_ID = "unsloth/Qwen2.5-VL-7B-Instruct"
+#
+# print(f"Loading {MODEL_ID}...")
+# model, processor = FastVisionModel.from_pretrained(
+#     MODEL_ID,
+#     load_in_4bit = True, # Keeps VRAM usage low enough for Colab
+#     use_gradient_checkpointing = "unsloth",
+# )
+#
+# # For Qwen, we don't strictly need to force the chat template like Gemma,
+# # but you can proceed to the Inference cell directly after this runs!
+
+
+===== CELL 27 =====
+# from torch.utils.data import DataLoader
+# import torch
+# from tqdm import tqdm
+# from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+# import seaborn as sns
+# import matplotlib.pyplot as plt
+# from unsloth import FastVisionModel
+#
+# # Define the labels used in the dataset mapping
+# LABEL_MAP = {
+#     0: "Normal",
+#     1: "Pneumonia",
+# }
+#
+# # Ensure model is in inference mode
+# FastVisionModel.for_inference(model)
+#
+# # Define batch size (Increase to 8 or 16 if using premium GPUs like L4/A100)
+# BATCH_SIZE = 8
+#
+# y_true_batched = []
+# y_pred_batched = []
+#
+# print(f"Starting batched evaluation (Batch Size: {BATCH_SIZE})...")
+#
+# # We process in steps of BATCH_SIZE
+# for i in tqdm(range(0, len(test_ds), BATCH_SIZE)):
+#     batch = test_ds[i : i + BATCH_SIZE]
+#
+#     # Collect ground truths
+#     for lbl in batch["label"]:
+#         y_true_batched.append(LABEL_MAP[lbl])
+#
+#     # Prepare batched prompt messages
+#     batch_messages = []
+#     batch_images = []
+#     for img in batch["image"]:
+#         messages = [
+#             {
+#                 "role": "user",
+#                 "content": [
+#                     {
+#                         "type": "text",
+#                         "text": "You are an expert radiologist. Analyze this chest X-ray and classify it as 'Normal' or 'Pneumonia'. Output only the diagnosis."
+#                     },
+#                     {"type": "image"}
+#                 ],
+#             }
+#         ]
+#         input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
+#         batch_messages.append(input_text)
+#         batch_images.append([img])
+#
+#     # Process batched inputs together
+#     inputs = processor(
+#         text=batch_messages,
+#         images=batch_images,
+#         add_special_tokens=False,
+#         return_tensors="pt",
+#         padding=True
+#     ).to("cuda")
+#
+#     # Perform batched generation
+#     with torch.no_grad():
+#         outputs = model.generate(
+#             **inputs,
+#             max_new_tokens=15,
+#             temperature=0.01,
+#             use_cache=True
+#         )
+#
+#     # Decode outputs
+#     prompt_len = inputs.input_ids.shape[1]
+#     responses = processor.batch_decode(outputs[:, prompt_len:], skip_special_tokens=True)
+#
+#     for response in responses:
+#         if "Pneumonia" in response:
+#             pred_label = "Pneumonia"
+#         elif "Normal" in response:
+#             pred_label = "Normal"
+#         else:
+#             pred_label = "Error"
+#         y_pred_batched.append(pred_label)
+#
+# # 1. Calculate Accuracy
+# acc_batched = accuracy_score(y_true_batched, y_pred_batched)
+# accuracy_pct_batched = acc_batched * 100
+#
+# # 2. Print Text Reports
+# print(f"\n✅ Batched Qwen2.5-VL Task1 Accuracy: {accuracy_pct_batched:.2f}%")
+# print("\n📊 Detailed Report:")
+# print(classification_report(y_true_batched, y_pred_batched, labels=["Normal", "Pneumonia"]))
+#
+# # 3. Confusion Matrix
+# cm_batched = confusion_matrix(y_true_batched, y_pred_batched, labels=["Normal", "Pneumonia"])
+#
+# plt.figure(figsize=(6, 5))
+# sns.heatmap(cm_batched, annot=True, fmt='d', cmap='Blues',
+#             xticklabels=["Normal", "Pneumonia"],
+#             yticklabels=["Normal", "Pneumonia"])
+# plt.xlabel('Predicted by AI (Qwen)')
+# plt.ylabel('Actual Truth')
+# plt.title('Confusion Matrix (Qwen2.5-VL Batched)')
+# plt.show()
+
+
+===== CELL 29 =====
+# ==========================================
+# LLAMA-3.2-11B-VISION-INSTRUCT (COMPARISON)
+# ==========================================
+# import gc
+# import torch
+# from unsloth import FastVisionModel
+#
+# # Clear previous model from memory to avoid OOM
+# if 'model' in globals(): del model
+# if 'processor' in globals(): del processor
+# if 'model_llama' in globals(): del model_llama
+# if 'processor_llama' in globals(): del processor_llama
+# gc.collect()
+# torch.cuda.empty_cache()
+#
+# MODEL_ID_LLAMA = "unsloth/Llama-3.2-11B-Vision-Instruct"
+# print(f"Loading {MODEL_ID_LLAMA}...")
+#
+# model, processor = FastVisionModel.from_pretrained(
+#     MODEL_ID_LLAMA,
+#     load_in_4bit = True,
+#     use_gradient_checkpointing = "unsloth",
+# )
+
+
+===== CELL 30 =====
+# from torch.utils.data import DataLoader
+# import torch
+# from tqdm import tqdm
+# from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+# import seaborn as sns
+# import matplotlib.pyplot as plt
+# from unsloth import FastVisionModel
+#
+# if 'model' not in globals() or 'processor' not in globals():
+#     raise NameError("The variables 'model' or 'processor' are not defined. Please run the cell above that loads the Qwen model first!")
+#
+# # Define the labels used in the dataset mapping
+# LABEL_MAP = {
+#     0: "Normal",
+#     1: "Pneumonia",
+# }
+#
+# # Ensure model is in inference mode
+# FastVisionModel.for_inference(model)
+#
+# # Define batch size (Increase to 8 or 16 if using premium GPUs like L4/A100)
+# BATCH_SIZE = 8
+#
+# y_true_batched = []
+# y_pred_batched = []
+#
+# print(f"Starting batched evaluation (Batch Size: {BATCH_SIZE})...")
+#
+# # We process in steps of BATCH_SIZE
+# for i in tqdm(range(0, len(test_ds), BATCH_SIZE)):
+#     batch = test_ds[i : i + BATCH_SIZE]
+#
+#     # Collect ground truths
+#     for lbl in batch["label"]:
+#         y_true_batched.append(LABEL_MAP[lbl])
+#
+#     # Prepare batched prompt messages
+#     batch_messages = []
+#     batch_images = []
+#     for img in batch["image"]:
+#         messages = [
+#             {
+#                 "role": "user",
+#                 "content": [
+#                     {
+#                         "type": "text",
+#                         "text": "You are an expert radiologist. Analyze this chest X-ray and classify it as 'Normal' or 'Pneumonia'. Output only the diagnosis."
+#                     },
+#                     {"type": "image"}
+#                 ],
+#             }
+#         ]
+#         input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
+#         batch_messages.append(input_text)
+#         batch_images.append([img])
+#
+#     # Process batched inputs together
+#     inputs = processor(
+#         text=batch_messages,
+#         images=batch_images,
+#         add_special_tokens=False,
+#         return_tensors="pt",
+#         padding=True
+#     ).to("cuda")
+#
+#     # Perform batched generation
+#     with torch.no_grad():
+#         outputs = model.generate(
+#             **inputs,
+#             max_new_tokens=15,
+#             temperature=0.01,
+#             use_cache=True
+#         )
+#
+#     # Decode outputs
+#     prompt_len = inputs.input_ids.shape[1]
+#     responses = processor.batch_decode(outputs[:, prompt_len:], skip_special_tokens=True)
+#
+#     for response in responses:
+#         if "Pneumonia" in response:
+#             pred_label = "Pneumonia"
+#         elif "Normal" in response:
+#             pred_label = "Normal"
+#         else:
+#             pred_label = "Error"
+#         y_pred_batched.append(pred_label)
+#
+# # 1. Calculate Accuracy
+# acc_batched = accuracy_score(y_true_batched, y_pred_batched)
+# accuracy_pct_batched = acc_batched * 100
+#
+# # 2. Print Text Reports
+# print(f"\n✅ Batched Qwen2.5-VL Task1 Accuracy: {accuracy_pct_batched:.2f}%")
+# print("\n📊 Detailed Report:")
+# print(classification_report(y_true_batched, y_pred_batched, labels=["Normal", "Pneumonia"]))
+#
+# # 3. Confusion Matrix
+# cm_batched = confusion_matrix(y_true_batched, y_pred_batched, labels=["Normal", "Pneumonia"])
+#
+# plt.figure(figsize=(6, 5))
+# sns.heatmap(cm_batched, annot=True, fmt='d', cmap='Blues',
+#             xticklabels=["Normal", "Pneumonia"],
+#             yticklabels=["Normal", "Pneumonia"])
+# plt.xlabel('Predicted by AI (Qwen)')
+# plt.ylabel('Actual Truth')
+# plt.title('Confusion Matrix (Qwen2.5-VL Batched)')
+# plt.show()
