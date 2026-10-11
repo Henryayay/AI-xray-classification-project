@@ -74,6 +74,28 @@ def mcnemar_exact(y, pred_a, pred_b):
     return {"a_only_correct": b, "b_only_correct": c, "p": p}
 
 
+def fast_metric(metric, y, logit, threshold=0.0):
+    """Vectorised subset of ``all_metrics`` for resampling loops."""
+    if metric == "auroc":
+        r = sps.rankdata(logit)
+        n1 = int(np.sum(y == 1))
+        n0 = len(y) - n1
+        return (r[y == 1].sum() - n1 * (n1 + 1) / 2) / (n1 * n0)
+    yhat = logit >= threshold
+    pos = y == 1
+    if metric == "accuracy":
+        return np.mean(yhat == pos)
+    sens = np.mean(yhat[pos]) if pos.any() else np.nan
+    spec = np.mean(~yhat[~pos]) if (~pos).any() else np.nan
+    if metric == "balanced_accuracy":
+        return 0.5 * (sens + spec)
+    if metric == "sensitivity":
+        return sens
+    if metric == "specificity":
+        return spec
+    return all_metrics(y, logit, threshold)[metric]
+
+
 def paired_bootstrap(y, logits_a, logits_b, metric="auroc", thresholds_a=None,
                      thresholds_b=None, n_boot=10000, seed=0, alpha=0.05):
     """Paired, class-stratified bootstrap of the difference in seed-averaged metric.
@@ -91,7 +113,7 @@ def paired_bootstrap(y, logits_a, logits_b, metric="auroc", thresholds_a=None,
     tb = np.zeros(len(lb)) if thresholds_b is None else np.asarray(thresholds_b, float)
 
     def seed_mean(L, T, idx):
-        return np.mean([all_metrics(y[idx], L[s, idx], T[s])[metric] for s in range(len(L))])
+        return np.mean([fast_metric(metric, y[idx], L[s, idx], T[s]) for s in range(len(L))])
 
     full = np.arange(len(y))
     observed = seed_mean(la, ta, full) - seed_mean(lb, tb, full)

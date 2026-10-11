@@ -1,0 +1,75 @@
+# Machine-readable statistical analysis plan. Human-readable rationale: docs/analysis_plan.md.
+# Frozen before any --final run; changes after that point must be listed as deviations.
+
+alpha: 0.05
+n_boot: 10000
+bootstrap_seed: 20261011
+primary_metric: auroc
+
+# Condition families from which the validation-best condition is selected
+# (highest mean validation AUROC across seeds/draws; train_fraction 1.0 only).
+families:
+  supervised: [cnn_resnet50, cnn_densenet121, cnn_xrv_densenet121, probe_rad_dino,
+               probe_imagenet_resnet50]
+  vlm_any: [vlm_gemma3_zeroshot, vlm_medgemma_zeroshot, vlm_gemma3_icl_random,
+            vlm_gemma3_icl_knn, vlm_medgemma_icl_random, vlm_medgemma_icl_knn,
+            vlm_gemma3_lora, vlm_medgemma_lora]
+  gemma3_lora: [vlm_gemma3_lora]
+  medgemma_lora: [vlm_medgemma_lora]
+  gemma3_zeroshot: [vlm_gemma3_zeroshot]
+  medgemma_zeroshot: [vlm_medgemma_zeroshot]
+  gemma3_icl_random: [vlm_gemma3_icl_random]
+  gemma3_icl_knn: [vlm_gemma3_icl_knn]
+  medgemma_icl_random: [vlm_medgemma_icl_random]
+  medgemma_icl_knn: [vlm_medgemma_icl_knn]
+
+# Primary comparisons, each run for both tasks; Holm correction over all of them.
+# variant: raw | contextual | val_centered ; rule: default (logit >= 0) | youden_val
+primary:
+  - id: best_vlm_vs_best_supervised
+    a: {family: vlm_any, variant: raw}
+    b: {family: supervised, variant: raw}
+    metric: auroc
+  - id: medgemma_vs_gemma3_lora
+    a: {family: medgemma_lora, variant: raw}
+    b: {family: gemma3_lora, variant: raw}
+    metric: auroc
+  - id: medgemma_vs_gemma3_zeroshot
+    a: {family: medgemma_zeroshot, variant: raw}
+    b: {family: gemma3_zeroshot, variant: raw}
+    metric: auroc
+  - id: icl_knn_vs_random_gemma3
+    a: {family: gemma3_icl_knn, variant: raw}
+    b: {family: gemma3_icl_random, variant: raw}
+    metric: auroc
+  - id: calibration_valcentered_vs_raw_gemma3_icl_random
+    a: {family: gemma3_icl_random, variant: val_centered, rule: default}
+    b: {family: gemma3_icl_random, variant: raw, rule: default, same_condition_as: a}
+    metric: balanced_accuracy
+
+# Secondary / exploratory comparisons: unadjusted p-values, labelled exploratory.
+secondary:
+  - id: icl_knn_vs_random_medgemma
+    a: {family: medgemma_icl_knn, variant: raw}
+    b: {family: medgemma_icl_random, variant: raw}
+    metric: auroc
+  - id: contextual_vs_raw_gemma3_icl_random
+    a: {family: gemma3_icl_random, variant: contextual, rule: default}
+    b: {family: gemma3_icl_random, variant: raw, rule: default, same_condition_as: a}
+    metric: balanced_accuracy
+  - id: calibration_valcentered_vs_raw_gemma3_zeroshot
+    a: {family: gemma3_zeroshot, variant: val_centered, rule: default}
+    b: {family: gemma3_zeroshot, variant: raw, rule: default, same_condition_as: a}
+    metric: balanced_accuracy
+  - id: gemma3_lora_vs_best_supervised
+    a: {family: gemma3_lora, variant: raw}
+    b: {family: supervised, variant: raw}
+    metric: auroc
+  - id: ensemble_vs_best_vlm
+    a: {experiment: ensemble_vlm_supervised, variant: raw}
+    b: {family: vlm_any, variant: raw}
+    metric: auroc
+  - id: ensemble_vs_best_supervised
+    a: {experiment: ensemble_vlm_supervised, variant: raw}
+    b: {family: supervised, variant: raw}
+    metric: auroc
