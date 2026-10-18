@@ -21,8 +21,8 @@ configs/            one YAML per experiment, plus the machine-readable analysis 
 scripts/            run_experiment, analyze, audit_dataset, power, gradcam,
                     make_tables, make_figures, extract_legacy_results, make_synthetic_results
 docs/analysis_plan.md   pre-registered statistical analysis plan (frozen before test runs)
-docs/user_guide.pdf    how to run the tests and produce the result data and graphs
-                        (source: docs/user_guide.html)
+docs/user_guide.docx   how to run the tests and produce the result data and graphs
+docs/user_guide.pdf    the same guide as a PDF
 results/            committed outputs: audit, power analysis, legacy numbers, experiment
                     predictions (per image), summaries; test_access_log.jsonl
 paper/              LaTeX manuscript; paper/generated and paper/figures are produced by scripts
