@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>User guide: tests, results, and graphs</title>
+<style>
+  :root {
+    --ink: #1b2430;
+    --muted: #526072;
+    --navy: #14324f;
+    --teal: #0e6b66;
+    --line: #d7dee6;
+    --code: #f4f7f8;
+    --call: #eef6f4;
+    --warn: #fbf6ea;
+    --warn-line: #c4923a;
+    --paper: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 10.6pt; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    font-family: "Liberation Serif", "Noto Serif", Georgia, serif;
+    line-height: 1.45;
+    background: white;
+  }
+  @page {
+    size: A4;
+    margin: 14mm 15mm 16mm 15mm;
+    @bottom-left {
+      content: "POLCOVID  ·  tests, results, and graphs";
+      font-family: Inter, "Liberation Sans", sans-serif;
+      font-size: 8pt;
+      color: #6a7785;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: Inter, "Liberation Sans", sans-serif;
+      font-size: 9pt;
+      color: #14324f;
+    }
+  }
+  @page :first {
+    margin: 0;
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+  }
+  h1, h2, h3, h4 {
+    font-family: Inter, "Liberation Sans", sans-serif;
+    color: var(--navy);
+    line-height: 1.2;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  h1 {
+    font-size: 16.5pt;
+    font-weight: 650;
+    margin: 0 0 0.35em;
+    padding-bottom: 0.22em;
+    border-bottom: 2px solid var(--teal);
+    page-break-before: always;
+    break-before: page;
+  }
+  h1.first { page-break-before: auto; break-before: auto; }
+  h2 { font-size: 12.4pt; margin: 1.15em 0 0.35em; }
+  h3 { font-size: 11pt; margin: 0.95em 0 0.25em; color: #1e4d63; }
+  p { margin: 0.45em 0 0.55em; }
+  a { color: var(--teal); text-decoration: none; }
+  strong { font-weight: 650; }
+  code, pre, .mono {
+    font-family: "JetBrains Mono", "Liberation Mono", ui-monospace, monospace;
+  }
+  code {
+    font-size: 0.88em;
+    background: var(--code);
+    padding: 0.05em 0.28em;
+    border-radius: 3px;
+  }
+  pre {
+    background: var(--code);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal);
+    border-radius: 4px;
+    padding: 0.55em 0.7em;
+    font-size: 8.4pt;
+    line-height: 1.38;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin: 0.45em 0 0.7em;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.4em 0 0.8em;
+    font-family: Inter, "Liberation Sans", sans-serif;
+    font-size: 8.5pt;
+    line-height: 1.32;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.32em 0.45em;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    background: #eef3f6;
+    color: var(--navy);
+    font-weight: 650;
+    border-bottom: 1.5px solid #b7c6d2;
+  }
+  tr { page-break-inside: avoid; break-inside: avoid; }
+  ul, ol { margin: 0.3em 0 0.6em; padding-left: 1.2em; }
+  li { margin: 0.18em 0; }
+  .cover {
+    page-break-after: always;
+    break-after: page;
+    min-height: 297mm;
+    background: #102033;
+    color: #f4f7fb;
+    padding: 28mm 20mm 22mm;
+    position: relative;
+  }
+  .cover .kicker {
+    font-family: Inter, "Liberation Sans", sans-serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 9pt;
+    color: #8fd0c8;
+    margin: 0 0 18mm;
+  }
+  .cover h1 {
+    font-size: 32pt;
+    line-height: 1.08;
+    color: white;
+    border: 0;
+    padding: 0;
+    margin: 0 0 6mm;
+    page-break-before: auto;
+    font-weight: 650;
+  }
+  .cover .sub {
+    font-family: Inter, "Liberation Sans", sans-serif;
+    font-size: 13.5pt;
+    line-height: 1.35;
+    color: #d5e2ee;
+    max-width: 150mm;
+    margin: 0 0 14mm;
+  }
+  .cover .rule {
+    width: 42mm;
+    height: 3px;
+    background: #1aa39a;
+    margin: 0 0 10mm;
+  }
+  .cover .meta {
+    font-family: Inter, "Liberation Sans", sans-serif;
+    font-size: 10pt;
+    color: #b7c6d4;
+    line-height: 1.55;
+  }
+  .cover .foot {
+    position: absolute;
+    left: 20mm;
+    right: 20mm;
+    bottom: 18mm;
+    font-family: Inter, "Liberation Sans", sans-serif;
+    font-size: 9pt;
+    color: #8ea0b3;
+    border-top: 1px solid #2c4660;
+    padding-top: 4mm;
+  }
+  .toc { page-break-after: always; break-after: page; }
+  .toc h1 { page-break-before: auto; }
+  .toc ol { list-style: none; padding: 0; margin: 0.6em 0; }
+  .toc li { margin: 0; border-bottom: 1px dotted #c5d0da; }
+  .toc a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: Inter, "Liberation Sans", sans-serif;
+    font-size: 10.5pt;
+    padding: 0.38em 0;
+  }
+  .toc a::after {
+    content: target-counter(attr(href), page);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .toc .num { color: var(--teal); font-weight: 650; margin-right: 0.45em; }
+  .call, .warn {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border-radius: 4px;
+    padding: 0.55em 0.75em;
+    margin: 0.55em 0 0.75em;
+  }
+  .call { background: var(--call); border-left: 3px solid var(--teal); }
+  .warn { background: var(--warn); border-left: 3px solid var(--warn-line); }
+  .call strong, .warn strong { font-family: Inter, "Liberation Sans", sans-serif; }
+  .steps { margin: 0.4em 0 0.8em; padding: 0; list-style: none; }
+  .steps li {
+    margin: 0 0 0.45em;
+    padding: 0.35em 0.55em 0.4em 2.3em;
+    position: relative;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .steps .n {
+    position: absolute;
+    left: 0; top: 0.28em;
+    width: 1.55em; height: 1.55em;
+    border-radius: 50%;
+    background: var(--navy);
+    color: white;
+    font-family: Inter, "Liberation Sans", sans-serif;
+    font-size: 8.5pt;
+    font-weight: 650;
+    text-align: center;
+    line-height: 1.55em;
+  }
+  .small { font-size: 9pt; color: var(--muted); }
+  .caption {
+    font-family: Inter, "Liberation Sans", sans-serif;
+    font-size: 8.4pt;
+    color: var(--muted);
+    margin: -0.35em 0 0.7em;
+  }
+  .keep { page-break-inside: avoid; break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <p class="kicker">POLCOVID · chest X-ray classification</p>
+  <h1>Tests, results,<br>and graphs</h1>
+  <div class="rule"></div>
+  <p class="sub">A user guide to running the software tests, executing the experiments, and turning prediction files into summary tables and figures.</p>
+  <p class="meta">
+    Repository path: the project root (the directory that contains <span class="mono">src/</span>, <span class="mono">scripts/</span>, <span class="mono">configs/</span>, and <span class="mono">tests/</span>).<br>
+    Companion documents: <span class="mono">README.md</span>, <span class="mono">docs/analysis_plan.md</span>.<br>
+    October 2026
+  </p>
+  <div class="foot">
+    Research code for a controlled comparison of vision-language models and supervised CNNs. Not a medical device.
+  </div>
+</section>
+
+<nav class="toc">
+  <h1 class="first">Contents</h1>
+  <ol>
+    <li><a href="#quick"><span><span class="num">1</span>Three ways to get results</span></a></li>
+    <li><a href="#what"><span><span class="num">2</span>What the experiments measure</span></a></li>
+    <li><a href="#install"><span><span class="num">3</span>Install the environment</span></a></li>
+    <li><a href="#unittests"><span><span class="num">4</span>Unit tests and lint</span></a></li>
+    <li><a href="#synthetic"><span><span class="num">5</span>Pipeline test on synthetic predictions</span></a></li>
+    <li><a href="#cpu"><span><span class="num">6</span>Audit, power analysis, and legacy numbers</span></a></li>
+    <li><a href="#experiments"><span><span class="num">7</span>Run an experiment</span></a></li>
+    <li><a href="#files"><span><span class="num">8</span>Where the result data is written</span></a></li>
+    <li><a href="#summary"><span><span class="num">9</span>Build the summary tables</span></a></li>
+    <li><a href="#graphs"><span><span class="num">10</span>Build the graphs</span></a></li>
+    <li><a href="#tables"><span><span class="num">11</span>Build the manuscript tables</span></a></li>
+    <li><a href="#read"><span><span class="num">12</span>Read a result by hand</span></a></li>
+    <li><a href="#colab"><span><span class="num">13</span>Run the GPU suite in Colab</span></a></li>
+    <li><a href="#integrity"><span><span class="num">14</span>Keep the test set honest</span></a></li>
+    <li><a href="#trouble"><span><span class="num">15</span>Troubleshooting</span></a></li>
+  </ol>
+  <p class="small">Commands in this guide are run from the repository root, with the virtual environment activated. A leading <code>python</code> means the interpreter in that environment.</p>
+</nav>
+
+<h1 id="quick">1. Three ways to get results</h1>
+<p>There are three separate jobs in this repository. They share code, and they write different files.</p>
+<ol class="steps">
+  <li><span class="n">A</span><strong>Check that the code works.</strong> <code>pytest</code> runs the CPU unit tests. A second, optional step writes fake predictions and drives the analysis, table, and figure scripts, which is what continuous integration does. Neither step is a scientific result.</li>
+  <li><span class="n">B</span><strong>Turn data that is already in the repository into tables and graphs.</strong> The audit, the power analysis, the legacy notebook numbers, and the linear-probe predictions are committed under <code>results/</code>. <code>scripts/analyze.py</code> and <code>scripts/make_figures.py</code> read those files. No GPU is required, and the image datasets are not downloaded.</li>
+  <li><span class="n">C</span><strong>Run a model, then make graphs from its predictions.</strong> <code>scripts/run_experiment.py</code> writes one directory per run. After a <code>--final</code> run, the same analysis and figure scripts add that run to the summaries and graphs.</li>
+</ol>
+
+<h2>Track A — software tests</h2>
+<pre><code>python -m venv .venv && . .venv/bin/activate
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements-dev.txt
+ruff check src scripts tests
+pytest -q</code></pre>
+
+<h2>Track B — graphs from committed results</h2>
+<pre><code>python scripts/analyze.py
+python scripts/make_figures.py
+python scripts/make_tables.py</code></pre>
+<p>Outputs land in <code>results/summary/</code>, <code>paper/figures/</code>, and <code>paper/generated/</code>. Figures whose experiments have not been run are skipped. Tables for those experiments say “pending”. With only the committed linear probes, you should get a data-efficiency figure and a ROC panel for the supervised family, plus the audit contact sheets.</p>
+
+<h2>Track C — one real experiment, then its graphs</h2>
+<pre><code># Validation only. Does not touch the test split.
+python scripts/run_experiment.py --config configs/cnn_resnet50.yaml
+
+# Score the test split as well, and append to the test-access log.
+python scripts/run_experiment.py --config configs/cnn_resnet50.yaml --final
+
+python scripts/analyze.py
+python scripts/make_figures.py
+python scripts/make_tables.py</code></pre>
+<div class="call"><strong>Start here if you only want the pictures.</strong> Track B is enough to see the figure pipeline working. Track C is what fills in the missing panels. Section 10 lists every graph and the file it comes from.</div>
+
+<h1 id="what">2. What the experiments measure</h1>
+<p>Each experiment is a binary classification of chest radiographs from the published POLCOVID splits. Both tasks are exactly balanced: 1,596 training images, 228 validation images, and 456 test images.</p>
+<table>
+  <thead><tr><th>Task</th><th>Negative class (label 0)</th><th>Positive class (label 1)</th><th>Hugging Face dataset</th></tr></thead>
+  <tbody>
+    <tr><td><code>task1</code></td><td>Normal</td><td>Pneumonia</td><td><code>Henryayay/POLCOVID_task1_70_10_20</code></td></tr>
+    <tr><td><code>task2</code></td><td>Non-COVID Pneumonia</td><td>COVID-19</td><td><code>Henryayay/POLCOVID_task2_70_10_20</code></td></tr>
+  </tbody>
+</table>
+<p>The Hub revisions are pinned in <code>src/cxr/tasks.py</code>. Every run records the revision it actually loaded in <code>meta.json</code>.</p>
+<p>The primary endpoint is the area under the ROC curve (AUROC) of the positive class on the test set. Secondary endpoints are balanced accuracy, sensitivity, specificity, F1, Matthews correlation, AUPRC, Brier score, expected calibration error, and the positive-prediction rate. The decision threshold for the main tables is the one that maximises Youden’s J on the validation split. Calibration comparisons use the argmax rule, which is <code>logit &gt;= 0</code>.</p>
+<p>Five families of model are configured under <code>configs/</code>:</p>
+<ul>
+  <li><strong>CNNs</strong> (<code>kind: cnn</code>): ResNet-50, DenseNet-121, and a torchxrayvision DenseNet-121, trained from the YAML recipe.</li>
+  <li><strong>Linear probes</strong> (<code>kind: linear_probe</code>): a logistic regression on frozen RAD-DINO or ImageNet ResNet-50 embeddings.</li>
+  <li><strong>Zero-shot VLMs</strong> (<code>kind: vlm_zeroshot</code>): Gemma-3-4B-it and MedGemma-4B-it, scored by class-name likelihood.</li>
+  <li><strong>In-context learning</strong> (<code>kind: vlm_icl</code>): the same models with <em>k</em> exemplars, either random or RAD-DINO nearest neighbours.</li>
+  <li><strong>LoRA</strong> (<code>kind: vlm_lora</code>): the same models fine-tuned with LoRA, including a Gemma-3 data-efficiency curve.</li>
+</ul>
+<p>The score stored for every image is a <strong>logit for the positive class</strong>. For a vision-language model that logit is the log-likelihood of the positive class name minus the log-likelihood of the negative class name. Probability is the sigmoid of the logit. Hard labels for the argmax rule are <code>logit &gt;= 0</code>.</p>
+
+<h1 id="install">3. Install the environment</h1>
+<p>Python 3.10 or newer is required. The continuous-integration job uses 3.12.</p>
+
+<h2>CPU machine</h2>
+<p>Use this for unit tests, the audit, the power analysis, analysis, tables, and figures. Installing PyTorch from the CPU index first stops <code>pip</code> from pulling a CUDA wheel.</p>
+<pre><code>python -m venv .venv
+. .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements-dev.txt</code></pre>
+<p><code>requirements-dev.txt</code> includes <code>requirements.txt</code> plus <code>pytest</code> and <code>ruff</code>. Core packages are NumPy, pandas, PyArrow, SciPy, scikit-learn, Hugging Face <code>datasets</code> and <code>transformers</code>, Pillow, PyYAML, and Matplotlib.</p>
+
+<h2>GPU machine</h2>
+<p>An A100 is the machine the vision-language configs were written for. CNN and linear-probe runs also use CUDA when it is present.</p>
+<pre><code>pip install -r requirements.txt -r requirements-gpu.txt</code></pre>
+<p><code>requirements-gpu.txt</code> adds Unsloth, TRL, PEFT, Accelerate, torchxrayvision, and OpenCLIP. Unsloth pulls a compatible bitsandbytes build for 4-bit loading where a config asks for it. The committed VLM configs set <code>load_in_4bit: false</code> on the LoRA runs.</p>
+
+<h2>Hugging Face access</h2>
+<ul>
+  <li>The POLCOVID datasets and Gemma-3 weights are loaded from the Hub on first use. They are cached by the <code>datasets</code> and <code>transformers</code> libraries (usually under <code>~/.cache/huggingface</code>).</li>
+  <li>MedGemma is gated. Accept the Health AI Developer Foundations terms on the model page, then export a token: <code>export HF_TOKEN=...</code>. In Colab, store that token as a secret named <code>HF_TOKEN</code>.</li>
+  <li>Nothing in this repository pushes to the Hub.</li>
+</ul>
+<div class="warn"><strong>Disk.</strong> Checkpoints (<code>model.pt</code>, LoRA <code>adapter/</code> directories) and the embedding cache (<code>cache/*.npy</code>) are git-ignored. They can be large. Prediction parquet files and <code>meta.json</code> are the files you keep and, when a run is final, commit.</div>
+
+<h1 id="unittests">4. Unit tests and lint</h1>
+<p>The unit tests live in <code>tests/</code> and do not need a GPU, a download of the POLCOVID images, or a finished experiment. Pytest is configured in <code>pyproject.toml</code>: <code>src/</code> and <code>tests/</code> are on the Python path, and the test path is <code>tests</code>.</p>
+<pre><code>pytest -q
+pytest -q --tb=short                 # full tracebacks for failures
+pytest tests/test_metrics_stats.py   # one module
+pytest -q -k "delong or holm"        # tests whose names match
+ruff check src scripts tests</code></pre>
+<p>A quiet run prints a dot per test and a summary line. Exit code 0 means every test passed. Ruff checks formatting and import rules in <code>src</code>, <code>scripts</code>, and <code>tests</code>. It does not look at <code>legacy/</code> or <code>notebooks/</code>.</p>
+
+<h2>What each test module covers</h2>
+<table>
+  <thead><tr><th>File</th><th>What a failure there means</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>tests/test_components.py</code></td>
+      <td>Prompts, label parsing, class-stratified subsets, image padding and hashing, the six robustness perturbations, random and nearest-neighbour exemplar selection, and the duplicate detector used by the audit.</td>
+    </tr>
+    <tr>
+      <td><code>tests/test_metrics_stats.py</code></td>
+      <td>Threshold metrics against scikit-learn, calibration (ECE, temperature scaling, Youden threshold), Wilson intervals, DeLong AUROC tests, exact McNemar, the paired bootstrap, and Holm correction.</td>
+    </tr>
+    <tr>
+      <td><code>tests/test_vlm_scoring.py</code></td>
+      <td>Likelihood scoring on a tiny random Gemma-3 that uses the real processor: the prefix cache matches a full forward pass, and the chat template contains a single beginning-of-sequence token. The processor config is downloaded from <code>unsloth/gemma-3-4b-it</code> at the pinned revision. If that download fails, the module skips itself rather than failing.</td>
+    </tr>
+  </tbody>
+</table>
+<p>To run the suite without any Hub access:</p>
+<pre><code>pytest -q --ignore=tests/test_vlm_scoring.py</code></pre>
+<p><code>tests/tiny_gemma3.py</code> is a helper, not a test. It builds a randomly initialised Gemma-3 with a handful of layers so the scoring tests stay on CPU.</p>
+
+<h2>What continuous integration runs</h2>
+<p><code>.github/workflows/ci.yml</code> runs on every push and pull request, on Ubuntu with Python 3.12:</p>
+<ol>
+  <li>Install CPU PyTorch, then <code>requirements-dev.txt</code>.</li>
+  <li><code>ruff check src scripts tests</code>.</li>
+  <li><code>pytest -q</code>.</li>
+  <li>The synthetic pipeline test in the next section, with 200 bootstrap replicates.</li>
+  <li><code>python scripts/make_tables.py</code>, then <code>git diff --exit-code paper/generated</code>. A pull request fails if the committed LaTeX tables are out of date relative to <code>results/</code>.</li>
+</ol>
+<p>CI does not train a model and does not call <code>--final</code> on real data.</p>
+
+<h1 id="synthetic">5. Pipeline test on synthetic predictions</h1>
+<p>This is the way to prove that analysis, tables, and figures run, without waiting for a model and without writing anything into the paper. <code>scripts/make_synthetic_results.py</code> builds a results tree with the same layout as a real run and plants a file named <code>SYNTHETIC</code> at its root. The numbers are random logits with a planted class separation. They are not experimental results.</p>
+<pre><code>python scripts/make_synthetic_results.py --out /tmp/synth
+cp -r results/audit /tmp/synth/audit
+python scripts/analyze.py --results /tmp/synth --n-boot 200
+python scripts/make_tables.py --results /tmp/synth --out /tmp/synth_tables
+python scripts/make_figures.py --results /tmp/synth --out /tmp/synth_figs
+ls /tmp/synth_figs</code></pre>
+<p>Defaults are 3 seeds, 60 validation images, and 120 test images per task (<code>--seeds</code>, <code>--n-val</code>, <code>--n-test</code>). The real plan uses 10,000 bootstrap replicates; <code>--n-boot 200</code> is only for this smoke test. Use the full default when you analyse real predictions.</p>
+<div class="warn"><strong>The paper directory is protected.</strong> If the results root contains a file named <code>SYNTHETIC</code>, <code>make_tables.py</code> and <code>make_figures.py</code> refuse to write into <code>paper/</code>. Point <code>--out</code> somewhere else, as the commands above do. Do not copy a <code>SYNTHETIC</code> tree over <code>results/</code>.</div>
+<p>After a successful synthetic run you should see, under <code>/tmp/synth_figs</code>, some or all of <code>fig_icl_shots.pdf</code>, <code>fig_roc_reliability.pdf</code>, <code>fig_efficiency.pdf</code>, and <code>fig_robustness.pdf</code>, each also saved as a 200&nbsp;dpi PNG, plus copies of the audit contact sheets. Under <code>/tmp/synth/summary</code> you should see the CSVs described in section 9. Open <code>comparisons.csv</code> and confirm the <code>tier</code> column contains <code>primary</code> and <code>secondary</code>.</p>
+
+<h2>Optional CNN smoke run</h2>
+<p><code>configs/smoke_cnn.yaml</code> is a two-epoch ResNet-18 on 64×64 images, task 1 only, seed 0. It is a wiring check, not a result.</p>
+<pre><code>python scripts/run_experiment.py --config configs/smoke_cnn.yaml --limit 48 --final</code></pre>
+<p><code>--limit 48</code> keeps the first 48 images of each split and redirects output to <code>results/_smoke/</code>, which is git-ignored. <code>analyze.py</code> ignores any run whose <code>meta.json</code> has a non-zero <code>limit</code>, so these predictions cannot enter the test-set tables even if you point the script at them. The first run downloads the task 1 dataset.</p>
+
+<h1 id="cpu">6. Audit, power analysis, and legacy numbers</h1>
+<p>These three scripts do not train a model. Their outputs are already committed. Re-run them when you want to regenerate the files from scratch.</p>
+
+<h2>Dataset audit</h2>
+<pre><code>python scripts/audit_dataset.py
+# or: python scripts/audit_dataset.py --out results/audit</code></pre>
+<p>This downloads both datasets and writes <code>results/audit/</code>. It is the leakage and shortcut audit: perceptual hashes, near-duplicate pairs, cross-task copies, and simple image statistics that can act as shortcuts.</p>
+<table>
+  <thead><tr><th>File</th><th>Contents</th></tr></thead>
+  <tbody>
+    <tr><td><code>records_task1.parquet</code>, <code>records_task2.parquet</code></td><td>One row per image: split, index, label, SHA-256, perceptual hash, geometry, intensity.</td></tr>
+    <tr><td><code>duplicates_task1.csv</code>, <code>duplicates_task2.csv</code></td><td>Graded pairs inside a task (exact, near-identical, highly similar).</td></tr>
+    <tr><td><code>cross_task_duplicates.csv</code></td><td>Graded pairs between task 1 and task 2.</td></tr>
+    <tr><td><code>class_summary_task1.csv</code>, <code>class_summary_task2.csv</code></td><td>Per split and class, medians of geometry and intensity.</td></tr>
+    <tr><td><code>top_pairs_task1.png</code>, <code>top_pairs_task2.png</code></td><td>Contact sheet of the most similar cross-split pairs. These are the audit graphs.</td></tr>
+    <tr><td><code>audit_summary.json</code></td><td>Headline counts used by the paper tables.</td></tr>
+  </tbody>
+</table>
+<p>The leakage sensitivity in <code>analyze.py</code> drops test images whose correlation with a training image is at least 0.95, using these files. If <code>results/audit/</code> is missing, that CSV is empty and the leakage table stays pending.</p>
+
+<h2>Power analysis</h2>
+<pre><code>python scripts/power.py</code></pre>
+<p>The test set size is fixed (456 images, 228 per class), so this script reports what that sample can resolve rather than choosing a sample size. It reads the primary comparisons from <code>configs/analysis_plan.yaml</code> and writes <code>results/power/</code>:</p>
+<ul>
+  <li><code>accuracy_precision.csv</code> — Wilson 95% CI half-width of a proportion, at several true rates.</li>
+  <li><code>auroc_precision_mde.csv</code> — Hanley–McNeil standard error, CI half-width, and the AUROC difference detectable at 80% power, for correlations 0.3, 0.5, and 0.7, at α = 0.05 and at the Holm worst-case α.</li>
+  <li><code>mcnemar_mde.csv</code> — smallest paired accuracy difference detectable by McNemar’s test, by discordant-pair rate.</li>
+  <li><code>power.json</code> — the same three tables in one file.</li>
+</ul>
+<p>The script prints the rounded tables to the terminal. There is no graph; <code>make_tables.py</code> turns <code>power.json</code> into <code>paper/generated/tab_power.tex</code>.</p>
+
+<h2>Legacy notebook numbers</h2>
+<pre><code>python scripts/extract_legacy_results.py</code></pre>
+<p>Parses stored cell outputs under <code>legacy/</code> (it does not re-execute the notebooks) and writes <code>results/legacy/legacy_results.csv</code>. Columns include task, family (<code>cnn</code>, <code>finetune</code>, <code>icl_base</code>, <code>icl_nshot</code>), notebook path, shot count, accuracy percent, per-class recall, and a text field of known protocol issues. Treat these rows as preliminary. They are not used as inputs to the pre-registered comparisons.</p>
+
+<h1 id="experiments">7. Run an experiment</h1>
+<p>Every scientific run is one YAML file in <code>configs/</code> passed to <code>scripts/run_experiment.py</code>.</p>
+<pre><code>python scripts/run_experiment.py --config configs/probe_imagenet_resnet50.yaml
+python scripts/run_experiment.py --config configs/probe_imagenet_resnet50.yaml --final</code></pre>
+<p>Without <code>--final</code>, only the validation split is scored. Model selection and learning-rate sweeps use validation loss or validation negative log-likelihood. They never see the test split. With <code>--final</code>, the test split is scored as well, configured perturbations are applied to the test images, and one JSON line is appended to <code>results/test_access_log.jsonl</code>.</p>
+
+<h2>Command-line flags</h2>
+<table>
+  <thead><tr><th>Flag</th><th>Default</th><th>Effect</th></tr></thead>
+  <tbody>
+    <tr><td><code>--config</code></td><td>required</td><td>Path to the experiment YAML.</td></tr>
+    <tr><td><code>--final</code></td><td>off</td><td>Also score the test split and log test access.</td></tr>
+    <tr><td><code>--tasks</code></td><td>the YAML list</td><td>Restrict to <code>task1</code>, <code>task2</code>, or both.</td></tr>
+    <tr><td><code>--results</code></td><td><code>results</code></td><td>Root directory for prediction files.</td></tr>
+    <tr><td><code>--cache</code></td><td><code>cache</code></td><td>Where frozen-encoder embeddings are stored as <code>.npy</code>.</td></tr>
+    <tr><td><code>--limit N</code></td><td>0 (all images)</td><td>Smoke test: first N images per split. Output goes to <code>results/_smoke/</code> and is excluded from test-set analysis.</td></tr>
+    <tr><td><code>--only-runs</code></td><td>all runs</td><td>Only these run directory names, for example <code>seed0 seed1</code> or <code>seed0_shots4</code>.</td></tr>
+    <tr><td><code>--overwrite</code></td><td>off</td><td>Recompute a run even when <code>meta.json</code> already exists.</td></tr>
+    <tr><td><code>--device</code></td><td><code>cuda</code> if available, else <code>cpu</code></td><td>For example <code>--device cpu</code>.</td></tr>
+  </tbody>
+</table>
+
+<h2>How a run is named</h2>
+<p>The directory name is built from the seed, the training fraction, and the shot count:</p>
+<pre><code>seed{seed}
+seed{seed}_frac{fraction}     # only when the fraction is not 1
+seed{seed}_shots{k}           # only for in-context learning
+seed{seed}_frac{fraction}_shots{k}</code></pre>
+<p>Examples: <code>results/task1/cnn_resnet50/seed3/</code>, <code>results/task2/probe_rad_dino/seed0_frac0.25/</code>, <code>results/task1/vlm_gemma3_icl_knn/seed2_shots8/</code>. A finished run contains <code>predictions.parquet</code> and <code>meta.json</code>. Training runs also keep <code>train_log.json</code> and a checkpoint (<code>model.pt</code> or <code>adapter/</code>). CNN experiments that sweep the learning rate write <code>hparam_selection.json</code> once, next to the run directories.</p>
+
+<h2>Runs are resumable</h2>
+<p>If <code>meta.json</code> already exists, the run is skipped, with two exceptions. Passing <code>--overwrite</code> always recomputes it. Passing <code>--final</code> recomputes a run whose existing metadata says <code>"final": false</code>, so you can train on validation and later score the test set. Checkpoints are reused: a CNN loads <code>model.pt</code> if it is there, and LoRA skips training when <code>adapter/</code> is there. You do not retrain just to add the test split.</p>
+<p>The log line <code>skip task1/cnn_resnet50/seed0 (exists)</code> means that run was left untouched. <code>done seed0 in 1234s</code> means it finished and wrote files.</p>
+
+<h2>Recommended order</h2>
+<p>Later configs reuse earlier choices and caches. Run them in this order, first without <code>--final</code> while you are developing, then again with <code>--final</code> once the analysis plan is frozen:</p>
+<ol>
+  <li><code>cnn_resnet50</code> — selects the learning rate on a sweep seed and writes <code>hparam_selection.json</code>.</li>
+  <li><code>cnn_resnet50_data_efficiency</code> — reads that learning rate (<code>lr_from: cnn_resnet50</code>). It fails with <code>FileNotFoundError</code> if the ResNet-50 run has not been done.</li>
+  <li><code>cnn_densenet121</code>, then <code>cnn_xrv_densenet121</code>.</li>
+  <li><code>probe_rad_dino</code> — also fills <code>cache/task*_rad_dino_*.npy</code>, which retrieval ICL reuses.</li>
+  <li><code>probe_imagenet_resnet50</code> — CPU-capable; predictions for seed 0 are already in the repository.</li>
+  <li><code>vlm_gemma3_zeroshot</code> and <code>vlm_medgemma_zeroshot</code>.</li>
+  <li><code>vlm_*_icl_random</code>, then <code>vlm_*_icl_knn</code>.</li>
+  <li><code>vlm_*_lora</code>, then <code>vlm_gemma3_lora_data_efficiency</code>.</li>
+</ol>
+<p>Retrieval ICL will compute RAD-DINO embeddings itself if the cache is empty, so the probe does not have to come first, but sharing <code>--cache</code> avoids doing that work twice. Colab points both at the same Drive folder; locally the default <code>cache/</code> directory is shared as long as you do not override it.</p>
+
+<h2>Config catalogue</h2>
+<table>
+  <thead><tr><th>Config</th><th>Kind</th><th>What varies</th></tr></thead>
+  <tbody>
+    <tr><td><code>cnn_resnet50.yaml</code></td><td>CNN, ResNet-50</td><td>Seeds 0–4. Learning rate chosen from 1e-5, 1e-4, 3e-4. All six test perturbations.</td></tr>
+    <tr><td><code>cnn_resnet50_data_efficiency.yaml</code></td><td>CNN, ResNet-50</td><td>Seeds 0–4 at 10%, 25%, 50% of the training set. Learning rate inherited.</td></tr>
+    <tr><td><code>cnn_densenet121.yaml</code></td><td>CNN, DenseNet-121</td><td>Seeds 0–4. Same perturbation list.</td></tr>
+    <tr><td><code>cnn_xrv_densenet121.yaml</code></td><td>CNN, CXR-pretrained DenseNet-121</td><td>Seeds 0–4. Needs torchxrayvision.</td></tr>
+    <tr><td><code>probe_rad_dino.yaml</code></td><td>Linear probe</td><td>Seed 0 at 10%, 25%, 50%, 100% of training data. Encoder <code>microsoft/rad-dino</code>.</td></tr>
+    <tr><td><code>probe_imagenet_resnet50.yaml</code></td><td>Linear probe</td><td>Same fractions, ImageNet ResNet-50 features. Seed 0 is already committed for both tasks.</td></tr>
+    <tr><td><code>vlm_gemma3_zeroshot.yaml</code></td><td>Zero-shot VLM</td><td>One run, seed 0. Also generates free text for the parsing comparison.</td></tr>
+    <tr><td><code>vlm_medgemma_zeroshot.yaml</code></td><td>Zero-shot VLM</td><td>Same, MedGemma. Requires the Hub terms and <code>HF_TOKEN</code>.</td></tr>
+    <tr><td><code>vlm_gemma3_icl_random.yaml</code></td><td>Random ICL</td><td>Seeds 0–4 × k in {2, 4, 6, 8, 10}. Each seed is an independent exemplar draw.</td></tr>
+    <tr><td><code>vlm_gemma3_icl_knn.yaml</code></td><td>Retrieval ICL</td><td>Same grid. Exemplars are class-balanced RAD-DINO neighbours; seeds change order.</td></tr>
+    <tr><td><code>vlm_medgemma_icl_random.yaml</code>, <code>vlm_medgemma_icl_knn.yaml</code></td><td>ICL</td><td>Same grids on MedGemma.</td></tr>
+    <tr><td><code>vlm_gemma3_lora.yaml</code>, <code>vlm_medgemma_lora.yaml</code></td><td>LoRA</td><td>Seeds 0–4, full training set, six test perturbations, free-text generation on the clean images.</td></tr>
+    <tr><td><code>vlm_gemma3_lora_data_efficiency.yaml</code></td><td>LoRA</td><td>Seeds 0–2 at 10%, 25%, 50% of training data.</td></tr>
+    <tr><td><code>smoke_cnn.yaml</code></td><td>CNN smoke test</td><td>Not a result. See section 5.</td></tr>
+  </tbody>
+</table>
+<p><code>configs/analysis_plan.yaml</code> is not an experiment. It is the machine-readable analysis plan that <code>analyze.py</code> executes. The prose version is <code>docs/analysis_plan.md</code>. Where they differ, the YAML wins.</p>
+
+<h2>Narrow a long run</h2>
+<pre><code># One task, two seeds, validation only.
+python scripts/run_experiment.py \
+  --config configs/cnn_resnet50.yaml \
+  --tasks task1 \
+  --only-runs seed0 seed1
+
+# One ICL cell.
+python scripts/run_experiment.py \
+  --config configs/vlm_gemma3_icl_random.yaml \
+  --tasks task2 \
+  --only-runs seed0_shots4 \
+  --final</code></pre>
+
+<h1 id="files">8. Where the result data is written</h1>
+<p>A finished tree looks like this. Names in brackets appear only for some experiment kinds.</p>
+<pre><code>results/
+  test_access_log.jsonl          # one line per --final run
+  audit/                         # section 6
+  power/                         # section 6
+  legacy/legacy_results.csv
+  summary/                       # section 9, created by analyze.py
+  gradcam/                       # section 10, created by gradcam.py
+  task1/
+    cnn_resnet50/
+      hparam_selection.json
+      seed0/
+        predictions.parquet
+        meta.json
+        train_log.json
+        model.pt                 # git-ignored
+    probe_rad_dino/seed0_frac0.1/
+    vlm_gemma3_icl_knn/seed0_shots4/
+    vlm_gemma3_lora/seed0/adapter/   # git-ignored
+  task2/...</code></pre>
+
+<h2>predictions.parquet</h2>
+<p>One row per image per perturbation. Required columns, present for every model:</p>
+<table>
+  <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>split</code></td><td><code>validation</code> or <code>test</code>. Training images are not scored into this file.</td></tr>
+    <tr><td><code>index</code></td><td>Row index inside that split of the published dataset.</td></tr>
+    <tr><td><code>y_true</code></td><td>0 or 1. 1 is the positive class of the task.</td></tr>
+    <tr><td><code>logit</code></td><td>Score for the positive class. Higher means more positive. This is the column metrics use.</td></tr>
+    <tr><td><code>perturbation</code></td><td><code>none</code> on clean images. On the test split, also <code>border_mask</code>, <code>centre_mask</code>, <code>gamma_low</code>, <code>gamma_high</code>, <code>noise</code>, and <code>jpeg</code> when the config lists them.</td></tr>
+  </tbody>
+</table>
+<p>Vision-language rows add:</p>
+<table>
+  <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>logp_neg</code>, <code>logp_pos</code></td><td>Log-likelihood of each class name. <code>logit</code> is <code>logp_pos - logp_neg</code>.</td></tr>
+    <tr><td><code>logit_cf</code></td><td>Content-free logit (the same prompt on a blank image), used for contextual calibration. Missing when the config sets <code>content_free: none</code>.</td></tr>
+    <tr><td><code>generated</code></td><td>Free-text answer, only when <code>also_generate: true</code> and the perturbation is <code>none</code>.</td></tr>
+    <tr><td><code>parsed_label</code></td><td>0 or 1 if the text matched a class name, −1 if it did not, −100 if generation was not run.</td></tr>
+  </tbody>
+</table>
+
+<h2>meta.json</h2>
+<p>Provenance for that directory. Fields you will use most often:</p>
+<ul>
+  <li><code>task</code>, <code>experiment</code>, <code>run</code>, <code>kind</code>, <code>seed</code>, <code>train_fraction</code>, <code>shots</code>.</li>
+  <li><code>final</code> — true only when the command included <code>--final</code>. Test-set metrics require this.</li>
+  <li><code>limit</code> — non-zero for smoke runs. Those runs are dropped from test-set analysis.</li>
+  <li><code>config</code> and <code>config_hash</code> — the YAML and a 12-character hash of it.</li>
+  <li><code>git_commit</code> — <code>HEAD</code> at runtime, with a <code>-dirty</code> suffix if the worktree had uncommitted changes.</li>
+  <li><code>dataset_id</code>, <code>dataset_revision</code>, <code>environment</code> (Python, package versions, GPU name), <code>wall_seconds</code>.</li>
+  <li>Model-specific fields: chosen learning rate and epoch for CNNs, inverse-regularisation <code>C</code> for probes, exemplar indices for random ICL.</li>
+</ul>
+
+<h2>test_access_log.jsonl</h2>
+<p>Append-only. Each line is one <code>--final</code> evaluation: UTC time, task, experiment, run name, config hash, git commit, hostname, and user. Compare its timestamps with <code>git log docs/analysis_plan.md</code> to see that the analysis plan was committed before the test split was scored. Do not rewrite earlier lines.</p>
+
+<h2>Embedding cache</h2>
+<p>Files are <code>cache/{task}_{encoder}_{split}.npy</code>, and <code>cache/{task}_{encoder}_test_{perturbation}.npy</code> for perturbed test embeddings. Encoders in use are <code>rad_dino</code> and <code>imagenet_resnet50</code>. Deleting a <code>.npy</code> file just causes it to be recomputed.</p>
+
+<h1 id="summary">9. Build the summary tables</h1>
+<pre><code>python scripts/analyze.py
+python scripts/analyze.py --results results --plan configs/analysis_plan.yaml
+python scripts/analyze.py --n-boot 10000          # the plan default
+python scripts/analyze.py --out results/summary   # default is &lt;results&gt;/summary</code></pre>
+<p>The script loads every <code>predictions.parquet</code> three directory levels under the results root (<code>task/experiment/run</code>). It ignores runs that are not <code>final</code> or that used <code>--limit</code> when it computes test-set metrics. Validation metrics are still computed for those runs. It prints how many runs it loaded, then writes <code>results/summary/</code>.</p>
+<table>
+  <thead><tr><th>File</th><th>One row is</th><th>Use it for</th></tr></thead>
+  <tbody>
+    <tr><td><code>run_metrics.csv</code></td><td>One run, one score variant, one decision rule, one split</td><td>Per-seed numbers, confidence intervals, the exact threshold that was used.</td></tr>
+    <tr><td><code>condition_summary.csv</code></td><td>Mean, standard deviation, min, and max across seeds or draws</td><td>The curves and the “mean ± SD” cells in the paper.</td></tr>
+    <tr><td><code>selections.json</code></td><td>The validation-best member of each family, per task</td><td>Which condition the primary comparisons actually used. Ties break alphabetically, then toward smaller <em>k</em>.</td></tr>
+    <tr><td><code>comparisons.csv</code></td><td>One pre-registered comparison on one task</td><td>Bootstrap difference and CI (<code>boot_diff</code>, <code>boot_ci_low</code>, <code>boot_ci_high</code>), <code>boot_p</code>, Holm-adjusted <code>p_holm</code> on the primary rows, plus <code>delong_seedmean_p</code> and <code>mcnemar_run0_p</code>.</td></tr>
+    <tr><td><code>robustness_runs.csv</code>, <code>robustness.csv</code></td><td>Per run, then mean across runs</td><td>Test AUROC under each perturbation and the drop from the clean image.</td></tr>
+    <tr><td><code>leakage_sensitivity.csv</code></td><td>One condition</td><td>Test AUROC with and without test images that have a highly similar training image.</td></tr>
+    <tr><td><code>generation_vs_likelihood.csv</code></td><td>One VLM run and split</td><td>Parse-failure rate, accuracy of the parsed string, accuracy of the likelihood score, and agreement.</td></tr>
+    <tr><td><code>summary.json</code></td><td>The whole analysis</td><td>Selections, ensemble weights, and comparisons in one file.</td></tr>
+  </tbody>
+</table>
+
+<h2>Score variants and decision rules</h2>
+<p>Filter on these columns before you plot or quote a number. Mixing them double-counts a run.</p>
+<table>
+  <thead><tr><th>Column</th><th>Values</th><th>When it applies</th></tr></thead>
+  <tbody>
+    <tr><td><code>variant</code></td><td><code>raw</code></td><td>Every model. This is the primary AUROC.</td></tr>
+    <tr><td><code>variant</code></td><td><code>val_centered</code></td><td>VLMs. Subtracts the validation-set mean logit, which removes a constant preference for one label.</td></tr>
+    <tr><td><code>variant</code></td><td><code>contextual</code></td><td>VLMs that stored <code>logit_cf</code>. Subtracts the content-free logit.</td></tr>
+    <tr><td><code>rule</code></td><td><code>default</code></td><td>Threshold 0 (argmax). Used for calibration comparisons.</td></tr>
+    <tr><td><code>rule</code></td><td><code>youden_val</code></td><td>Threshold maximising Youden’s J on validation. Used for the main threshold metrics.</td></tr>
+    <tr><td><code>split</code></td><td><code>validation</code> or <code>test</code></td><td>Quote <code>test</code> for the paper. Use <code>validation</code> only to see what selection saw.</td></tr>
+  </tbody>
+</table>
+<p>Metric columns on <code>run_metrics.csv</code> include <code>auroc</code>, <code>auroc_ci_low</code>, <code>auroc_ci_high</code> (DeLong), <code>auprc</code>, <code>accuracy</code>, <code>balanced_accuracy</code>, <code>sensitivity</code>, <code>specificity</code>, <code>f1</code>, <code>mcc</code>, <code>brier</code>, <code>ece</code>, <code>ece_temp_scaled</code>, <code>positive_rate</code>, <code>threshold</code>, and <code>n</code>. On <code>condition_summary.csv</code> each metric grows suffixes <code>_mean</code>, <code>_std</code>, <code>_min</code>, and <code>_max</code>, plus <code>n_runs</code>.</p>
+<p>Shots are stored as the integer <em>k</em>, or as −1 when the experiment has no exemplars (CNNs, probes, zero-shot, LoRA). Training fraction is 1.0 for a full-data run.</p>
+
+<h2>What the comparisons file contains</h2>
+<p>Primary comparisons, each run on both tasks and then Holm-adjusted across all ten tests, are declared in <code>configs/analysis_plan.yaml</code>:</p>
+<ul>
+  <li><code>best_vlm_vs_best_supervised</code> — AUROC.</li>
+  <li><code>medgemma_vs_gemma3_lora</code> and <code>medgemma_vs_gemma3_zeroshot</code> — AUROC.</li>
+  <li><code>icl_knn_vs_random_gemma3</code> — AUROC at the validation-best <em>k</em> of each strategy.</li>
+  <li><code>calibration_valcentered_vs_raw_gemma3_icl_random</code> — balanced accuracy at argmax.</li>
+</ul>
+<p>Secondary rows are exploratory and are not Holm-adjusted: the same ICL contrast for MedGemma, contextual calibration, val-centring of Gemma-3 zero-shot, Gemma-3 LoRA against the best supervised model, and a validation-weighted ensemble of the best VLM and the best supervised model against each of its parts. The ensemble is built inside <code>analyze.py</code>. It is not a directory written by <code>run_experiment.py</code>. Its weight is in <code>summary.json</code> under <code>ensembles</code>.</p>
+<p>A comparison row with <code>status</code> other than <code>ok</code> means a condition has not been run with <code>--final</code> yet. That is expected until Track C is complete. The bootstrap uses 10,000 paired, class-stratified resamples of the test images and seed 20261011. On the full suite this step is the slow part of <code>analyze.py</code>; it does not use the GPU.</p>
+
+<h1 id="graphs">10. Build the graphs</h1>
+<pre><code>python scripts/make_figures.py
+python scripts/make_figures.py --results results --out paper/figures
+ls paper/figures</code></pre>
+<p>The script reads <code>results/summary/</code>, so run <code>analyze.py</code> first. Each plot is written twice: a vector <code>.pdf</code> for the manuscript and a 200&nbsp;dpi <code>.png</code> for viewing. A figure is skipped, rather than drawn empty, when its inputs are missing. The manuscript includes figures with <code>\IfFileExists</code>, so a missing file becomes a labelled placeholder and LaTeX still builds.</p>
+<p>The terminal ends with a line like <code>figures: ['fig_audit_pairs_task1.png', ...]</code>. That list is the inventory of what this run actually produced.</p>
+
+<h2>Figure catalogue</h2>
+<table>
+  <thead><tr><th>File</th><th>What you should see</th><th>Needs</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>fig_audit_pairs_task1.png</code><br><code>fig_audit_pairs_task2.png</code></td>
+      <td>Two rows of radiographs: the most similar pairs that sit in different splits, with the correlation printed under each pair. PNG only; these are copies of <code>results/audit/top_pairs_*.png</code>.</td>
+      <td>The audit. Already committed, so Track B copies them.</td>
+    </tr>
+    <tr>
+      <td><code>fig_icl_shots.pdf</code></td>
+      <td>Four panels. Columns are the two tasks. The top row is test AUROC against the number of in-context examples. The bottom row is balanced accuracy at argmax. Solid lines are raw scores, dashed lines are validation-centred scores. Dotted horizontal lines are the zero-shot models. A thin black line marks chance (0.5).</td>
+      <td>Final ICL runs in <code>condition_summary.csv</code>.</td>
+    </tr>
+    <tr>
+      <td><code>fig_roc_reliability.pdf</code></td>
+      <td>Top row: ROC curves on the test set for the validation-selected supervised model, the validation-selected VLM, and Gemma-3 zero-shot, using the first seed of each. Bottom row: reliability diagram of the uncalibrated positive-class probability in ten bins. The diagonal is perfect calibration.</td>
+      <td>At least one of those families present as a final run. With only the committed probes, the supervised curve is drawn and the VLM curves wait.</td>
+    </tr>
+    <tr>
+      <td><code>fig_efficiency.pdf</code></td>
+      <td>Test AUROC against the number of training images, on a log axis, one panel per task. Series are ResNet-50, Gemma-3 LoRA, and the RAD-DINO probe. Error bars are the standard deviation across seeds. The 100% point comes from the full-data experiment; the other points come from the matching <code>*_data_efficiency</code> config (the probe stores every fraction in one config).</td>
+      <td>At least two fractions for one of those series. The committed RAD-DINO probe is enough to draw its curve.</td>
+    </tr>
+    <tr>
+      <td><code>fig_robustness.pdf</code></td>
+      <td>Grouped bars of test AUROC under border mask, centre mask, low gamma, high gamma, Gaussian noise, and JPEG quality 10. A centre-masked AUROC far above 0.5 means the model is using something outside the lung fields.</td>
+      <td><code>robustness.csv</code> from final runs whose config lists perturbations.</td>
+    </tr>
+  </tbody>
+</table>
+<div class="call"><strong>Opening the files.</strong> The PDF versions are the ones to keep for the paper. The PNG versions are the ones to open in an image viewer. Both are written side by side in <code>paper/figures/</code>.</div>
+
+<h2>Grad-CAM panels</h2>
+<p>Grad-CAM is a separate script. It needs a CNN checkpoint from a <code>--final</code> run, because it scores the test images. It exits immediately if <code>meta.json</code> says the run was validation-only.</p>
+<pre><code>python scripts/gradcam.py --task task1 --experiment cnn_resnet50 --run seed0
+python scripts/gradcam.py --task task2 --experiment cnn_densenet121 --run seed0 --n-show 8
+python scripts/gradcam.py --task task1 --experiment cnn_resnet50 --run seed0 --limit 32</code></pre>
+<p>For every test image it records the fraction of Grad-CAM mass inside the central 15–85% of the frame (about the lung fields). Uniform attention puts 0.49 of the mass there. A mean well below 0.49 means the model is looking at the periphery: labels, markers, collimation.</p>
+<p>Outputs, both under <code>results/gradcam/</code>:</p>
+<ul>
+  <li><code>gradcam_{task}_{experiment}_{run}.json</code> — mean and median centre-mass, the mean within each class, and the fraction of images below the uniform value.</li>
+  <li><code>gradcam_{task}_{experiment}_{run}.png</code> — a contact sheet. The top row is the radiograph, the bottom row is the same image with the heatmap overlaid. Titles show the true label, whether argmax was correct, and the centre-mass of that image.</li>
+</ul>
+<p><code>--n-show</code> (default 6) is how many examples are drawn, balanced across class and correctness. <code>--limit</code> stops the quantitative pass early; leave it at 0 for the number you will report. The next <code>make_figures.py</code> copies these PNGs to <code>paper/figures/fig_gradcam_*.png</code>.</p>
+<p>Run it for the CNN checkpoints you care about. The Colab notebook does seed 0 of <code>cnn_resnet50</code>, <code>cnn_densenet121</code>, and <code>cnn_xrv_densenet121</code> on both tasks. Linear probes and VLMs do not have a Grad-CAM hook in this script.</p>
+
+<h2>Rebuild the paper PDF</h2>
+<p>After tables and figures exist:</p>
+<pre><code>cd paper && latexmk -pdf main.tex</code></pre>
+<p><code>paper/main.pdf</code> is git-ignored. The figures it embeds are the files in <code>paper/figures/</code>.</p>
+
+<h1 id="tables">11. Build the manuscript tables</h1>
+<pre><code>python scripts/make_tables.py
+python scripts/make_tables.py --results results --out paper/generated</code></pre>
+<p>Every <code>.tex</code> file under <code>paper/generated/</code> is written by this script. Do not edit those files by hand; the next run overwrites them, and CI rejects a commit in which they do not match <code>results/</code>. Missing experiments render as the word “pending”, so the manuscript never contains a number that was typed in.</p>
+<table>
+  <thead><tr><th>File</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td><code>tab_audit.tex</code>, <code>tab_shortcut.tex</code></td><td><code>results/audit/audit_summary.json</code></td></tr>
+    <tr><td><code>tab_power.tex</code></td><td><code>results/power/power.json</code></td></tr>
+    <tr><td><code>tab_legacy.tex</code></td><td><code>results/legacy/legacy_results.csv</code></td></tr>
+    <tr><td><code>tab_main_task1.tex</code>, <code>tab_main_task2.tex</code></td><td><code>condition_summary.csv</code>, raw scores, Youden threshold, test split</td></tr>
+    <tr><td><code>tab_icl.tex</code></td><td>ICL conditions across <em>k</em></td></tr>
+    <tr><td><code>tab_comparisons.tex</code></td><td><code>comparisons.csv</code></td></tr>
+    <tr><td><code>tab_robustness.tex</code></td><td><code>robustness.csv</code></td></tr>
+    <tr><td><code>tab_efficiency.tex</code></td><td>Data-efficiency rows of <code>condition_summary.csv</code></td></tr>
+    <tr><td><code>tab_generation.tex</code></td><td><code>generation_vs_likelihood.csv</code></td></tr>
+    <tr><td><code>tab_leakage.tex</code></td><td><code>leakage_sensitivity.csv</code></td></tr>
+    <tr><td><code>numbers.tex</code></td><td>LaTeX macros, including whether any results were available</td></tr>
+  </tbody>
+</table>
+
+<h1 id="read">12. Read a result by hand</h1>
+<p>These snippets use only pandas, PyArrow, and scikit-learn, which are already installed. Run them from the repository root, for example with <code>python</code> and a here-document, or by saving them as a temporary script. They do not write into <code>results/</code> or <code>paper/</code>.</p>
+
+<h3>One run, clean test images</h3>
+<pre><code>import json
+from pathlib import Path
+import pandas as pd
+from sklearn.metrics import roc_auc_score
+
+run = Path("results/task1/probe_imagenet_resnet50/seed0")
+meta = json.loads((run / "meta.json").read_text())
+df = pd.read_parquet(run / "predictions.parquet")
+test = df[(df.split == "test") &amp; (df.perturbation == "none")]
+print(meta["experiment"], "final =", meta["final"], "n =", len(test))
+print("AUROC", round(roc_auc_score(test.y_true, test.logit), 3))</code></pre>
+<p>Use a run that exists on disk. After a CNN or VLM <code>--final</code> run, point <code>run</code> at that directory instead. Validation-only runs have no <code>split == "test"</code> rows, so the AUROC line will fail until you pass <code>--final</code>.</p>
+
+<h3>The summary table the figures use</h3>
+<pre><code>import pandas as pd
+cs = pd.read_csv("results/summary/condition_summary.csv")
+view = cs[(cs.task == "task1") &amp; (cs.split == "test")
+          &amp; (cs.variant == "raw") &amp; (cs.rule == "youden_val")
+          &amp; (cs.train_fraction == 1.0) &amp; (cs.shots == -1)]
+print(view[["experiment", "auroc_mean", "auroc_std", "n_runs"]]
+      .sort_values("auroc_mean", ascending=False)
+      .to_string(index=False))</code></pre>
+
+<h3>A primary comparison</h3>
+<pre><code>import pandas as pd
+cmp = pd.read_csv("results/summary/comparisons.csv")
+cols = ["task", "id", "tier", "status", "boot_diff", "boot_ci_low",
+        "boot_ci_high", "boot_p", "p_holm"]
+have = [c for c in cols if c in cmp.columns]
+print(cmp.loc[cmp.tier == "primary", have].to_string(index=False))</code></pre>
+<p>Column names follow <code>analyze.py</code>. If a comparison could not be computed, <code>status</code> explains which side is missing, and the numeric columns are absent for that row. Quote a primary result only when <code>status</code> is <code>ok</code>.</p>
+
+<h3>Which condition was selected</h3>
+<pre><code>import json
+sel = json.loads(open("results/summary/selections.json").read())
+print(json.dumps(sel["task1"]["supervised"], indent=2))
+print(json.dumps(sel["task1"]["vlm_any"], indent=2))</code></pre>
+
+<h1 id="colab">13. Run the GPU suite in Colab</h1>
+<p><code>notebooks/colab_runner.ipynb</code> is a thin driver around the same scripts. The logic stays in the repository.</p>
+<ol>
+  <li>Runtime → Change runtime type → A100 GPU.</li>
+  <li>Add a secret named <code>HF_TOKEN</code>. Accept the MedGemma terms on the model page before the MedGemma cells.</li>
+  <li>Run the cells from the top. The notebook clones the repository, installs <code>requirements.txt</code> and <code>requirements-gpu.txt</code>, and optionally mirrors <code>results/</code> to Google Drive so a runtime reset does not throw away checkpoints. Set <code>USE_DRIVE = True</code> for that. The Drive copy is seeded with <code>rsync --ignore-existing</code>, so a re-run does not overwrite finished results.</li>
+  <li>The experiment cell loops over the config list in the recommended order. <code>FINAL = False</code> is the development setting. Set <code>FINAL = True</code> only after <code>docs/analysis_plan.md</code> is frozen. Every final run appends to the test-access log inside whichever directory <code>RESULTS</code> points at.</li>
+  <li>The next cell runs Grad-CAM for seed 0 of the three CNNs, on both tasks.</li>
+  <li>The last cell runs <code>analyze.py</code>, <code>make_tables.py</code>, and <code>make_figures.py</code> against <code>RESULTS</code>, and writes <code>pip freeze</code> to <code>environment-gpu.lock</code> next to the results. Copy <code>RESULTS</code> back into the repository’s <code>results/</code> and commit the prediction files, metadata, summaries, and figures. Leave <code>model.pt</code> and <code>adapter/</code> untracked; they are git-ignored.</li>
+</ol>
+<p>Re-running the notebook skips finished runs. A validation pass followed by a second pass with <code>FINAL = True</code> scores the test split without retraining, as in section 7.</p>
+
+<h1 id="integrity">14. Keep the test set honest</h1>
+<ul>
+  <li>Develop against the validation split. Pass <code>--final</code> once, and record it. The access log is the audit trail.</li>
+  <li>Do not edit <code>configs/analysis_plan.yaml</code> or <code>docs/analysis_plan.md</code> after seeing test metrics unless you add a row to the deviations table in the plan: date, change, whether test results had been seen, and why.</li>
+  <li>Report every condition that ran, including null results. A crashed seed is rerun with the same seed. A persistent failure is reported as missing, not dropped.</li>
+  <li>Do not type numbers into <code>paper/main.tex</code>. Regenerate tables and figures.</li>
+  <li>Do not point <code>make_tables.py</code> or <code>make_figures.py</code> at a <code>SYNTHETIC</code> tree when <code>--out</code> is inside <code>paper/</code>. The scripts exit on purpose.</li>
+  <li>Smoke runs (<code>--limit</code>, <code>results/_smoke/</code>) are not results. Their <code>limit</code> field keeps them out of the test-set analysis.</li>
+  <li>Legacy notebook accuracies stay in <code>tab_legacy.tex</code> and are labelled preliminary.</li>
+</ul>
+
+<h1 id="trouble">15. Troubleshooting</h1>
+<table>
+  <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>pytest</code> cannot import <code>cxr</code> or <code>torch</code></td>
+      <td>Activate <code>.venv</code> and install with the CPU commands in section 3. Run pytest from the repository root so <code>pyproject.toml</code> is picked up.</td>
+    </tr>
+    <tr>
+      <td><code>test_vlm_scoring</code> skipped, “tiny Gemma-3 unavailable”</td>
+      <td>The processor download failed. Check network access and Hub credentials. The rest of the suite does not need it. Re-run that file alone once the processor is cached.</td>
+    </tr>
+    <tr>
+      <td><code>FileNotFoundError</code> mentioning <code>hparam_selection.json</code></td>
+      <td><code>cnn_resnet50_data_efficiency</code> was started before <code>cnn_resnet50</code>. Run the parent config first, at least far enough to write the learning-rate selection.</td>
+    </tr>
+    <tr>
+      <td>MedGemma fails with 401 or 403</td>
+      <td>Accept the model terms in the browser, then export <code>HF_TOKEN</code>. Gemma-3 configs do not need that token.</td>
+    </tr>
+    <tr>
+      <td>A run prints <code>skip ... (exists)</code> and you wanted it redone</td>
+      <td>Pass <code>--overwrite</code>. Without that flag, an existing final run is kept, and an existing validation run is kept unless you are now passing <code>--final</code>.</td>
+    </tr>
+    <tr>
+      <td><code>--final</code> still seems to be training</td>
+      <td>The checkpoint is missing. CNN training writes <code>model.pt</code>; LoRA writes <code>adapter/</code>. If those were deleted, the run trains again, then scores. Embeddings in <code>cache/</code> are independent and will be reused.</td>
+    </tr>
+    <tr>
+      <td><code>analyze.py</code> reports runs, but <code>comparisons.csv</code> rows say <code>missing conditions</code> or <code>missing test predictions</code></td>
+      <td>Those experiments have no <code>--final</code> predictions yet, or only a <code>--limit</code> smoke run. Check <code>meta.json</code> for <code>"final": true</code> and <code>"limit": 0</code>.</td>
+    </tr>
+    <tr>
+      <td><code>make_figures.py</code> prints a short file list</td>
+      <td>Expected until the matching experiments exist. Audit copies and any curve with enough committed data still appear. Re-run after <code>analyze.py</code>.</td>
+    </tr>
+    <tr>
+      <td><code>refusing to write figures from SYNTHETIC results into paper/</code></td>
+      <td>The results directory contains a <code>SYNTHETIC</code> marker. Write to another <code>--out</code>, or analyse the real <code>results/</code> tree.</td>
+    </tr>
+    <tr>
+      <td>CI fails on <code>git diff --exit-code paper/generated</code></td>
+      <td>Run <code>python scripts/make_tables.py</code> and commit the <code>.tex</code> files it changed.</td>
+    </tr>
+    <tr>
+      <td>Grad-CAM says to run with <code>--final</code> first</td>
+      <td>The named run has no test-set predictions. Re-run that config with <code>--final</code>. The checkpoint is reused.</td>
+    </tr>
+    <tr>
+      <td>Out of GPU memory on a VLM config</td>
+      <td>The runner keeps one model in memory and clears it when the checkpoint changes. Close other processes. The published configs assume an A100. Do not switch on 4-bit loading as a silent change to a finished comparison; if you must, record it as a deviation.</td>
+    </tr>
+    <tr>
+      <td>Figures exist but the LaTeX PDF has empty boxes</td>
+      <td>The figure files are missing the exact stem the manuscript asks for (<code>fig_roc_reliability</code>, <code>fig_icl_shots</code>, <code>fig_efficiency</code>, <code>fig_robustness</code>, <code>fig_audit_pairs_task1</code>, <code>fig_audit_pairs_task2</code>). Run <code>make_figures.py</code> with <code>--out paper/figures</code> and rebuild with <code>latexmk -pdf main.tex</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>A short map of who writes what</h2>
+<table>
+  <thead><tr><th>You want</th><th>Run</th><th>Read</th></tr></thead>
+  <tbody>
+    <tr><td>Confidence the code is intact</td><td><code>pytest -q</code> and <code>ruff check src scripts tests</code></td><td>The pytest summary line</td></tr>
+    <tr><td>Confidence the graphs can be built</td><td>Section 5, output under <code>/tmp</code></td><td><code>/tmp/synth_figs</code> and <code>/tmp/synth/summary</code></td></tr>
+    <tr><td>Duplicate and shortcut findings</td><td><code>scripts/audit_dataset.py</code></td><td><code>results/audit/</code></td></tr>
+    <tr><td>What the sample size can resolve</td><td><code>scripts/power.py</code></td><td><code>results/power/</code></td></tr>
+    <tr><td>Per-image scores</td><td><code>scripts/run_experiment.py --final</code></td><td><code>results/&lt;task&gt;/&lt;experiment&gt;/&lt;run&gt;/predictions.parquet</code></td></tr>
+    <tr><td>Means, intervals, tests</td><td><code>scripts/analyze.py</code></td><td><code>results/summary/</code></td></tr>
+    <tr><td>Paper figures</td><td><code>scripts/make_figures.py</code></td><td><code>paper/figures/*.pdf</code> and <code>*.png</code></td></tr>
+    <tr><td>Localisation panels</td><td><code>scripts/gradcam.py</code></td><td><code>results/gradcam/</code></td></tr>
+    <tr><td>Paper tables</td><td><code>scripts/make_tables.py</code></td><td><code>paper/generated/*.tex</code></td></tr>
+  </tbody>
+</table>
+<p class="small">Source for this guide: <code>docs/user_guide.html</code>. Regenerate the PDF from the repository root with headless Chrome, printing to <code>docs/user_guide.pdf</code> with headers and footers disabled. Page margins and page breaks are in the stylesheet.</p>
+
+</body>
+</html>
