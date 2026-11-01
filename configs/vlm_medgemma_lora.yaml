@@ -13,7 +13,8 @@ grad_accum: 2
 epochs: 10
 lr: 2.0e-4
 patience: 5
-seeds: [0, 1, 2, 3, 4]
+# One training. Seed 0 only fixes LoRA init, dropout, and shuffle; the full set is used.
+seeds: [0]
 content_free: per_draw
 also_generate: true
 perturbations: [border_mask, centre_mask, gamma_low, gamma_high, noise, jpeg]

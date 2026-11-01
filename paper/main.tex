@@ -92,7 +92,8 @@ pre-registered protocol. Our contributions are:
   class information survives in low-level, non-anatomical image statistics (\cref{sec:audit}).
   \item A like-for-like comparison of a general (Gemma-3) and a medical (MedGemma) VLM of the
   same architecture and size under zero-shot, ICL and LoRA adaptation, against five supervised
-  baselines, with multiple seeds or exemplar draws per condition.
+  baselines. CNNs are repeated over seeds 0--4 and ICL over five exemplar draws. LoRA, linear
+  probes and zero-shot each use one fixed seed.
   \item Likelihood-based label scoring for VLMs, with contextual~\citep{zhao2021calibrate} and
   validation-estimated batch-style~\citep{zhou2024batch} correction of label bias, and an
   explicit comparison with the generation-and-parse protocol.
@@ -229,7 +230,8 @@ vision layers of the bfloat16 model (not 4-bit, unlike the preliminary runs), tr
 training split with the instruction above and the label as target. Training ran for up to
 10 epochs (learning rate $2\cdot10^{-4}$, effective batch 16) with evaluation after each epoch;
 the epoch with the lowest validation loss was kept, with early stopping after 5 epochs without
-improvement. Five seeds; the adapter was then merged and scored exactly like the zero-shot model.
+improvement. A single seed (0) fixes initialisation, dropout and data order. The adapter was
+then merged and scored exactly like the zero-shot model.
 
 \paragraph{Label-bias correction.} Three score variants are compared, all estimated without
 test data: \emph{raw} $s$; \emph{contextual} $s-s_{\mathrm{cf}}$, where $s_{\mathrm{cf}}$ is the
@@ -244,10 +246,12 @@ they are evaluated with threshold metrics under the argmax rule.
 
 \paragraph{Ensemble.} The best VLM and best supervised condition (by validation AUROC) are
 combined by a weighted sum of validation-standardised scores, with the weight chosen on
-validation.
+validation. Runs with equal counts are paired in name order. A single-run component is paired
+with every run of the other component.
 
 \paragraph{Data efficiency.} ResNet-50, the linear probes and Gemma-3 LoRA are retrained on
-class-stratified 10, 25 and 50\% subsets of the training split.
+class-stratified 10, 25 and 50\% subsets of the training split. ResNet-50 repeats each subset
+over seeds 0--4. The probes and Gemma-3 LoRA use one subset per fraction, fixed by seed 0.
 
 \paragraph{Robustness and shortcuts.} Every test image is also scored under six fixed
 perturbations: blackening a 12.5\% border frame, blackening the central 70\% of the image
@@ -281,14 +285,15 @@ the family-wise error rate at 0.05 over all \NPrimaryTests{}. Further comparison
 exploratory and are not adjusted.
 
 \paragraph{Inference.} For conditions with several seeds or draws, the estimand is the
-difference in the seed-averaged metric. Its 95\% CI and two-sided $p$-value come from a paired,
+difference in the seed-averaged metric. A condition trained once, including each LoRA run,
+contributes that single training. Its 95\% CI and two-sided $p$-value come from a paired,
 class-stratified bootstrap over test images~\citep{efron1993bootstrap} with 10,000 replicates;
-each replicate resamples images once and recomputes every seed of both conditions on that
-resample, so both image and seed variation are reflected. $p$-values use the add-one
-correction. As supporting analyses we report DeLong's test~\citep{delong1988comparing} with the
-fast algorithm of \citet{sun2014fast} on seed-averaged scores, and the exact McNemar
-test~\citep{mcnemar1947note} on the first seed. Proportions have Wilson
-intervals~\citep{wilson1927probable}.
+each replicate resamples images once and recomputes every repeated run of both conditions on
+that resample. Seed variation is included only for conditions that were repeated. $p$-values
+use the add-one correction. As supporting analyses we report DeLong's
+test~\citep{delong1988comparing} with the fast algorithm of \citet{sun2014fast} on
+seed-averaged scores, and the exact McNemar test~\citep{mcnemar1947note} on the first seed.
+Proportions have Wilson intervals~\citep{wilson1927probable}.
 
 \paragraph{Sample size.} The test set is fixed at 456 images. \Cref{tab:power} reports what it
 can resolve: at an AUROC of 0.85, the 95\% CI half-width is about \PowerAucHalfWidth{}
@@ -345,7 +350,8 @@ should be judged against.
 \subsection{Main comparison}
 
 \Cref{tab:main_task1,tab:main_task2} report every condition at its validation-selected
-configuration, as mean $\pm$ SD over seeds or exemplar draws; per-run values with DeLong
+configuration. Repeated conditions are mean $\pm$ SD over seeds or exemplar draws; a
+single-run condition (LoRA, probes, zero-shot) is one number. Per-run values with DeLong
 intervals are in \texttt{results/summary/run\_metrics.csv}. \Cref{tab:comparisons} gives the
 pre-specified comparisons with paired bootstrap CIs, raw and Holm-adjusted $p$-values, and the
 DeLong and McNemar supporting tests. \Cref{fig:roc} shows ROC and reliability curves.
@@ -461,6 +467,10 @@ may fall in this range; we report them as inconclusive rather than as equivalenc
   models may behave differently.
   \item \textbf{Hyperparameters.} LoRA settings were not tuned (they follow the preliminary
   recipe), whereas the CNN learning rate was. This favours the CNNs slightly.
+  \item \textbf{Single LoRA training.} Each LoRA condition was trained once, with seed 0.
+  Uncertainty from initialisation, dropout and data order is not measured. On the
+  data-efficiency curve, seed 0 also fixes which subset is used, so that curve does not
+  show variation across different subsets.
   \item \textbf{Labels.} Reference labels are those of the source database; we did not have
   access to reports or to RT-PCR results.
   \item \textbf{Clinical relevance.} Balanced binary tasks do not reflect clinical prevalence,

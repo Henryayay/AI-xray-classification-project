@@ -510,8 +510,8 @@ seed{seed}_frac{fraction}_shots{k}</code></pre>
     <tr><td><code>vlm_gemma3_icl_random.yaml</code></td><td>Random ICL</td><td>Seeds 0–4 × k in {2, 4, 6, 8, 10}. Each seed is an independent exemplar draw.</td></tr>
     <tr><td><code>vlm_gemma3_icl_knn.yaml</code></td><td>Retrieval ICL</td><td>Same grid. Exemplars are class-balanced RAD-DINO neighbours; seeds change order.</td></tr>
     <tr><td><code>vlm_medgemma_icl_random.yaml</code>, <code>vlm_medgemma_icl_knn.yaml</code></td><td>ICL</td><td>Same grids on MedGemma.</td></tr>
-    <tr><td><code>vlm_gemma3_lora.yaml</code>, <code>vlm_medgemma_lora.yaml</code></td><td>LoRA</td><td>Seeds 0–4, full training set, six test perturbations, free-text generation on the clean images.</td></tr>
-    <tr><td><code>vlm_gemma3_lora_data_efficiency.yaml</code></td><td>LoRA</td><td>Seeds 0–2 at 10%, 25%, 50% of training data.</td></tr>
+    <tr><td><code>vlm_gemma3_lora.yaml</code>, <code>vlm_medgemma_lora.yaml</code></td><td>LoRA</td><td>One run, seed 0, on the full training set. The seed fixes initialisation, dropout and shuffle. Six test perturbations, free-text generation on the clean images.</td></tr>
+    <tr><td><code>vlm_gemma3_lora_data_efficiency.yaml</code></td><td>LoRA</td><td>Seed 0 at 10%, 25%, 50% of training data. The seed also fixes which class-stratified subset is used.</td></tr>
     <tr><td><code>smoke_cnn.yaml</code></td><td>CNN smoke test</td><td>Not a result. See section 5.</td></tr>
   </tbody>
 </table>
@@ -604,7 +604,7 @@ python scripts/analyze.py --out results/summary   # default is &lt;results&gt;/s
   <thead><tr><th>File</th><th>One row is</th><th>Use it for</th></tr></thead>
   <tbody>
     <tr><td><code>run_metrics.csv</code></td><td>One run, one score variant, one decision rule, one split</td><td>Per-seed numbers, confidence intervals, the exact threshold that was used.</td></tr>
-    <tr><td><code>condition_summary.csv</code></td><td>Mean, standard deviation, min, and max across seeds or draws</td><td>The curves and the “mean ± SD” cells in the paper.</td></tr>
+    <tr><td><code>condition_summary.csv</code></td><td>Mean, standard deviation, min, and max across repeated runs. A single run has no standard deviation.</td><td>The curves and the “mean ± SD” cells in the paper. LoRA, probes and zero-shot are one number.</td></tr>
     <tr><td><code>selections.json</code></td><td>The validation-best member of each family, per task</td><td>Which condition the primary comparisons actually used. Ties break alphabetically, then toward smaller <em>k</em>.</td></tr>
     <tr><td><code>comparisons.csv</code></td><td>One pre-registered comparison on one task</td><td>Bootstrap difference and CI (<code>boot_diff</code>, <code>boot_ci_low</code>, <code>boot_ci_high</code>), <code>boot_p</code>, Holm-adjusted <code>p_holm</code> on the primary rows, plus <code>delong_seedmean_p</code> and <code>mcnemar_run0_p</code>.</td></tr>
     <tr><td><code>robustness_runs.csv</code>, <code>robustness.csv</code></td><td>Per run, then mean across runs</td><td>Test AUROC under each perturbation and the drop from the clean image.</td></tr>
@@ -638,7 +638,7 @@ python scripts/analyze.py --out results/summary   # default is &lt;results&gt;/s
   <li><code>icl_knn_vs_random_gemma3</code> — AUROC at the validation-best <em>k</em> of each strategy.</li>
   <li><code>calibration_valcentered_vs_raw_gemma3_icl_random</code> — balanced accuracy at argmax.</li>
 </ul>
-<p>Secondary rows are exploratory and are not Holm-adjusted: the same ICL contrast for MedGemma, contextual calibration, val-centring of Gemma-3 zero-shot, Gemma-3 LoRA against the best supervised model, and a validation-weighted ensemble of the best VLM and the best supervised model against each of its parts. The ensemble is built inside <code>analyze.py</code>. It is not a directory written by <code>run_experiment.py</code>. Its weight is in <code>summary.json</code> under <code>ensembles</code>.</p>
+<p>Secondary rows are exploratory and are not Holm-adjusted: the same ICL contrast for MedGemma, contextual calibration, val-centring of Gemma-3 zero-shot, Gemma-3 LoRA against the best supervised model, and a validation-weighted ensemble of the best VLM and the best supervised model against each of its parts. The ensemble is built inside <code>analyze.py</code>. It is not a directory written by <code>run_experiment.py</code>. Its weight is in <code>summary.json</code> under <code>ensembles</code>. If one component has a single run and the other has several, that single run is paired with every run of the other component. Equal counts are paired in sorted run-name order.</p>
 <p>A comparison row with <code>status</code> other than <code>ok</code> means a condition has not been run with <code>--final</code> yet. That is expected until Track C is complete. The bootstrap uses 10,000 paired, class-stratified resamples of the test images and seed 20261011. On the full suite this step is the slow part of <code>analyze.py</code>; it does not use the GPU.</p>
 
 <h1 id="graphs">10. Build the graphs</h1>
@@ -669,7 +669,7 @@ ls paper/figures</code></pre>
     </tr>
     <tr>
       <td><code>fig_efficiency.pdf</code></td>
-      <td>Test AUROC against the number of training images, on a log axis, one panel per task. Series are ResNet-50, Gemma-3 LoRA, and the RAD-DINO probe. Error bars are the standard deviation across seeds. The 100% point comes from the full-data experiment; the other points come from the matching <code>*_data_efficiency</code> config (the probe stores every fraction in one config).</td>
+      <td>Test AUROC against the number of training images, on a log axis, one panel per task. Series are ResNet-50, Gemma-3 LoRA, and the RAD-DINO probe. Error bars are the standard deviation across seeds when a fraction was repeated. Gemma-3 LoRA is one run per fraction, so it has no error bar. The 100% point comes from the full-data experiment; the other points come from the matching <code>*_data_efficiency</code> config (the probe stores every fraction in one config).</td>
       <td>At least two fractions for one of those series. The committed RAD-DINO probe is enough to draw its curve.</td>
     </tr>
     <tr>

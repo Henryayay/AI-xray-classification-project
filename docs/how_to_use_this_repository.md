@@ -228,7 +228,7 @@ Run experiments in this order. Later jobs reuse checkpoints and the RAD-DINO emb
 10. `vlm_gemma3_lora`, `vlm_medgemma_lora`
 11. `vlm_gemma3_lora_data_efficiency`
 
-The Colab runner loops over this list. One config can take many hours because each trained model uses five seeds and each ICL setting uses five exemplar draws at each shot count.
+The Colab runner loops over this list. One config can take many hours because each CNN uses five seeds and each ICL setting uses five exemplar draws at each shot count. Each LoRA config trains once (seed 0) per task and training fraction.
 
 ### 7.4 What a config contains
 
@@ -239,6 +239,8 @@ Example, `configs/vlm_gemma3_icl_random.yaml`: Gemma-3, random exemplars, shot c
 Retrieval ICL (`vlm_*_icl_knn`) uses the same shot counts. The five seeds there are five exemplar orderings of a retrieved set, not five new retrievals.
 
 Zero-shot MedGemma uses a single seed because there is no training and no exemplar draw.
+
+LoRA (`vlm_gemma3_lora`, `vlm_medgemma_lora`, and `vlm_gemma3_lora_data_efficiency`) uses seed 0 only. On the full training set that seed fixes initialisation, dropout and shuffle. On a data-efficiency fraction it also fixes which class-stratified subset is used.
 
 ### 7.5 Resuming
 

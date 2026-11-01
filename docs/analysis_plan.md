@@ -44,9 +44,13 @@ evaluation; its results are reported regardless of outcome, and a leakage sensit
 
 ## 4. Conditions, seeds and selection
 
-- Experiments are those in `configs/` (`cnn_*`, `probe_*`, `vlm_*`). Supervised and LoRA
-  conditions use seeds 0-4; ICL uses 5 independent exemplar draws (random) or 5 exemplar
-  orderings (retrieval) per k in {2, 4, 6, 8, 10}.
+- Experiments are those in `configs/` (`cnn_*`, `probe_*`, `vlm_*`). CNN conditions use
+  seeds 0-4. ICL uses 5 independent exemplar draws (random) or 5 exemplar orderings
+  (retrieval) per k in {2, 4, 6, 8, 10}. Linear probes and zero-shot use seed 0.
+- **LoRA seeds.** `vlm_gemma3_lora`, `vlm_medgemma_lora` and
+  `vlm_gemma3_lora_data_efficiency` use a single seed (0). On the full training set that seed
+  fixes LoRA initialisation, dropout and data order, and every training image is used. On a
+  data-efficiency fraction the same seed also fixes the class-stratified subset.
 - Hyperparameters: CNN learning rate chosen from {1e-5, 1e-4, 3e-4} by minimum validation loss
   with a separate sweep seed; checkpoint chosen by minimum validation loss; linear-probe L2
   strength by validation NLL; LoRA settings fixed to the original recipe; ensemble weight by
@@ -54,6 +58,11 @@ evaluation; its results are reported regardless of outcome, and a leakage sensit
 - **Family-best selection:** where a comparison involves "the best" condition of a family, the
   condition with the highest mean validation AUROC (raw scores, full training data) is chosen;
   ties are broken alphabetically and then by smaller k.
+- **Ensemble pairing.** The validation-weighted ensemble pairs the best VLM condition with the
+  best supervised condition. Runs are sorted by name. Equal counts are paired one-to-one. If
+  one side has a single run, that run is paired with every run on the other side. If both
+  sides have several runs but different counts, pairs follow sorted order up to the shorter
+  list.
 
 ## 5. Comparisons and inference
 
@@ -76,10 +85,12 @@ validation-weighted VLM + supervised ensemble against each component.
 the *seed-averaged* metric. Its 95% CI and two-sided p-value come from a paired,
 class-stratified bootstrap over test images (10,000 replicates, seed 20261011): each replicate
 resamples images once and recomputes every seed of both conditions on that resample. The p-value
-is 2 x min(P(d <= 0), P(d >= 0)) with add-one correction. As supporting analyses we report
-DeLong's test on seed-averaged scores and an exact McNemar test on the first seed of each
-condition. Per-condition uncertainty: DeLong 95% CI for each run's AUROC, Wilson CI for
-proportions, and mean +/- SD (with per-seed values in `run_metrics.csv`) across seeds.
+is 2 x min(P(d <= 0), P(d >= 0)) with add-one correction. A condition with one run (LoRA,
+linear probes, zero-shot) contributes that run, so training-seed variation is not part of its
+interval. As supporting analyses we report DeLong's test on seed-averaged scores and an exact
+McNemar test on the first seed of each condition. Per-condition uncertainty: DeLong 95% CI for
+each run's AUROC, Wilson CI for proportions, and mean +/- SD across repeated runs (per-run
+values in `run_metrics.csv`). A single run has no SD.
 
 ## 6. Pre-specified sensitivity and descriptive analyses
 
@@ -112,4 +123,4 @@ are described as inconclusive rather than as evidence of equivalence.
 
 | Date | Change | Before/after test results | Reason |
 |---|---|---|---|
-| (none yet) | | | |
+| 2026-11-01 | LoRA conditions `vlm_gemma3_lora` and `vlm_medgemma_lora` changed from seeds 0-4 to seed 0. `vlm_gemma3_lora_data_efficiency` changed from seeds 0-2 to seed 0. Ensemble pairing now reuses a single-run component with every run of the other component. | Before any LoRA test-set evaluation. Probe `--final` runs already exist in `results/test_access_log.jsonl`. | Full-data LoRA repeats train on the same images. The extra trainings were dropped to limit compute. Seed 0 keeps each run reproducible. The pairing change stops a one-run LoRA model from silently dropping the other component's extra seeds. |

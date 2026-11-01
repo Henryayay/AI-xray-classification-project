@@ -13,6 +13,7 @@ grad_accum: 2
 epochs: 10
 lr: 2.0e-4
 patience: 5
-seeds: [0, 1, 2]
+# One subset per fraction. Seed 0 chooses that subset and fixes training randomness.
+seeds: [0]
 train_fractions: [0.1, 0.25, 0.5]
 content_free: none
