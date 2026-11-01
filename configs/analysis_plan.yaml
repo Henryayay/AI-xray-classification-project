@@ -8,6 +8,9 @@ primary_metric: auroc
 
 # Condition families from which the validation-best condition is selected
 # (highest mean validation AUROC across seeds/draws; train_fraction 1.0 only).
+# LoRA, linear probes and zero-shot are one seed (0). CNN seeds are 0-4; ICL uses five draws.
+# Ensemble pairing: equal run counts pair by sorted name; a single run is reused with every
+# run of the other component (see docs/analysis_plan.md).
 families:
   supervised: [cnn_resnet50, cnn_densenet121, cnn_xrv_densenet121, probe_rad_dino,
                probe_imagenet_resnet50]

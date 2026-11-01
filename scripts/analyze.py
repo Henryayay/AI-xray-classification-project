@@ -168,6 +168,22 @@ def stacked(runs_, variant, rule, perturbation="none"):
 
 # ------------------------------------------------------------------- ensemble
 
+def pair_components(left, right):
+    """Pair runs of the two ensemble components.
+
+    Callers pass runs sorted by name. Equal counts pair one-to-one in that order.
+    A single run on one side is reused with every run on the other side, so a
+    one-run LoRA model is not silently matched to only the first supervised seed.
+    If both sides have several runs but different counts, pair in order up to the
+    shorter list.
+    """
+    if len(left) == 1 and len(right) > 1:
+        return [(left[0], run) for run in right]
+    if len(right) == 1 and len(left) > 1:
+        return [(run, right[0]) for run in left]
+    return list(zip(left, right))
+
+
 def build_ensembles(runs, cs, plan, tasks):
     """Validation-weighted average of z-scored logits: best VLM + best supervised model."""
     new = []
@@ -177,7 +193,7 @@ def build_ensembles(runs, cs, plan, tasks):
         if not a or not b:
             continue
         ra, rb = condition_runs(runs, task, a), condition_runs(runs, task, b)
-        for k, (x, z) in enumerate(zip(ra, rb)):
+        for k, (x, z) in enumerate(pair_components(ra, rb)):
             px, pz = x["predictions"], z["predictions"]
             vx, vz = split_frame(px, "validation"), split_frame(pz, "validation")
             tx, tz = split_frame(px, "test"), split_frame(pz, "test")

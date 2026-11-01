@@ -41,8 +41,9 @@ tests/              CPU unit tests (run in CI)
   fine-tuning notebooks evaluated with a different prompt than they trained with).
 - **Single BOS token.** The original few-shot notebooks tokenised the chat template with special
   tokens enabled, producing a duplicated `<bos>`.
-- **Seeds and draws.** 5 seeds for every trained model; 5 independent exemplar draws per ICL
-  setting (the original used one draw, so its shot curve conflated k with exemplar choice).
+- **Seeds and draws.** 5 seeds for every CNN; LoRA uses one fixed seed (0); 5 independent
+  exemplar draws per ICL setting (the original used one draw, so its shot curve conflated k
+  with exemplar choice).
 - **Validation-only model selection** and a logged, opt-in test evaluation (`--final`).
 - **New strategies:** retrieval-augmented ICL (RAD-DINO nearest neighbours per class),
   contextual and validation-centred calibration, MedGemma vs. Gemma-3 under identical

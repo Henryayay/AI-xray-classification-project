@@ -10,5 +10,5 @@ Method & $k$ & AUROC & Bal.\ acc. & Sens. & Spec. & ECE & runs\\
 \multicolumn{8}{l}{\textit{Pending: experiments not yet run; generated automatically once results exist.}}\\
 \bottomrule
 \end{tabular}
-\par\vspace{2pt}\footnotesize Test-set mean\,$\pm$\,SD over seeds (supervised, LoRA) or exemplar draws (ICL). AUROC uses raw scores. Threshold metrics use the decision threshold maximising Youden's $J$ on validation; ECE is after validation temperature scaling. $k$: number of in-context examples, chosen on validation.
+\par\vspace{2pt}\footnotesize Test-set mean\,$\pm$\,SD over CNN seeds or ICL exemplar draws when a condition has several runs. LoRA, probes and zero-shot are one run and are shown as a single number. AUROC uses raw scores. Threshold metrics use the decision threshold maximising Youden's $J$ on validation; ECE is after validation temperature scaling. $k$: number of in-context examples, chosen on validation.
 \end{table}
