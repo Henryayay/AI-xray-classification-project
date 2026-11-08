@@ -238,7 +238,9 @@ def cond_row(cs, task, exp, shots, variant, rule, split="test", frac=1.0):
 def main_tables(S, out, macros):
     ncol = 8
     header = ("Method & $k$ & AUROC & Bal.\\ acc. & Sens. & Spec. & ECE & runs")
-    note = ("Test-set mean\\,$\\pm$\\,SD over seeds (supervised, LoRA) or exemplar draws (ICL). "
+    note = ("Test-set mean\\,$\\pm$\\,SD over CNN seeds or ICL exemplar draws when a condition "
+            "has several runs. LoRA, probes and zero-shot are one run and are shown as a "
+            "single number. "
             "AUROC uses raw scores. Threshold metrics use the decision threshold maximising "
             "Youden's $J$ on validation; ECE is after validation temperature scaling. $k$: "
             "number of in-context examples, chosen on validation.")
@@ -317,8 +319,9 @@ def comparison_table(S, out):
                      f"{r.boot_p:.3g} & {holm} \\\\\n")
     write(out, "tab_comparisons.tex", table(
         "Pre-registered comparisons on the test set. $\\Delta$ is the difference in the "
-        "seed-averaged metric (A$-$B) with a paired, class-stratified bootstrap CI over test "
-        "cases (10{,}000 replicates). Conditions are selected on validation only. Primary "
+        "run-averaged metric (A$-$B) with a paired, class-stratified bootstrap CI over test "
+        "cases (10{,}000 replicates). A condition trained once contributes that run. "
+        "Conditions are selected on validation only. Primary "
         "$p$-values are Holm-adjusted across both tasks; secondary comparisons are exploratory.",
         "tab:comparisons", "llp{5.2cm}lccc", header, rows or pending(7, "final runs"),
         size="\\scriptsize"))
@@ -344,7 +347,7 @@ def robustness_table(S, out):
                 c0 = f3(None if clean is None else clean.auroc_mean)
                 rows += f"{t[-1]} & {NAMES[exp]} & {c0} & " + " & ".join(cells) + " \\\\\n"
     write(out, "tab_robustness.tex", table(
-        "Test AUROC (mean over seeds) under test-time perturbations. ``centre\\_mask'' removes "
+        "Test AUROC (mean over runs) under test-time perturbations. ``centre\\_mask'' removes "
         "the central 70\\% of the image (most of the lung fields); AUROC well above 0.5 after "
         "this perturbation indicates reliance on non-pulmonary cues.", "tab:robustness",
         "cl" + "c" * (len(perts) + 1), header, rows or pending(len(perts) + 3, "final runs"),
@@ -371,7 +374,8 @@ def efficiency_table(S, out):
                     rows += f"{t[-1]} & {NAMES[full]} & " + " & ".join(cells) + " \\\\\n"
     write(out, "tab_efficiency.tex", table(
         "Test AUROC versus the fraction of the 1{,}596 training images used (class-stratified "
-        "subsets; mean\\,$\\pm$\\,SD over seeds).", "tab:efficiency", "clcccc", header,
+        "subsets). Repeated subsets are mean\\,$\\pm$\\,SD over seeds; LoRA is one subset per "
+        "fraction.", "tab:efficiency", "clcccc", header,
         rows or pending(6, "data-efficiency experiments"), size="\\scriptsize"))
 
 
@@ -389,7 +393,7 @@ def generation_table(S, out):
                      f"{f3(r.accuracy_likelihood)} & {f3(r.agreement)} \\\\\n")
     write(out, "tab_generation.tex", table(
         "Original protocol (greedy generation + string matching) versus label-likelihood "
-        "scoring with the argmax rule, on the same test images (mean over seeds).",
+        "scoring with the argmax rule, on the same test images (mean over runs).",
         "tab:generation", "clcccc", header, rows or pending(6, "final VLM runs"),
         size="\\scriptsize"))
 
