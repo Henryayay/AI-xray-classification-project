@@ -1,0 +1,13 @@
+# CPU smoke test: python scripts/run_experiment.py --config configs/smoke_cnn.yaml --limit 48 --final
+name: smoke_cnn
+kind: cnn
+tasks: [task1]
+arch: resnet18
+image_size: 64
+batch_size: 16
+epochs: 2
+patience: 2
+lr: 1.0e-4
+seeds: [0]
+num_workers: 0
+perturbations: [border_mask]

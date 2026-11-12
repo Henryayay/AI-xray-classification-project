@@ -1,0 +1,257 @@
+{
+  "method": {
+    "candidate": "Pearson r of normalised 64x64 thumbnails >= 0.92 (exhaustive, all pairs)",
+    "verification": "Pearson r at 256x256",
+    "near_identical": 0.99,
+    "highly_similar": 0.95
+  },
+  "tasks": {
+    "task1": {
+      "dataset_id": "Henryayay/POLCOVID_task1_70_10_20",
+      "revision": "435f00fc15744fc2cedfea9efcdb041f1d93113b",
+      "class_names": [
+        "Normal",
+        "Pneumonia"
+      ],
+      "split_sizes": {
+        "train": 1596,
+        "test": 456,
+        "validation": 228
+      },
+      "positive_fraction": {
+        "test": 0.5,
+        "train": 0.5,
+        "validation": 0.5
+      },
+      "n_images": 2280,
+      "unique_sha256": 2280,
+      "n_candidates": 3813,
+      "duplicates": {
+        "near_identical_or_exact": {
+          "n_pairs": 0,
+          "by_split_pair": {},
+          "label_conflicts": 0,
+          "test_images_with_train_match": 0
+        },
+        "highly_similar_or_closer": {
+          "n_pairs": 21,
+          "by_split_pair": {
+            "test-train": 9,
+            "train-train": 9,
+            "train-validation": 1,
+            "test-test": 2
+          },
+          "label_conflicts": 5,
+          "test_images_with_train_match": 8
+        }
+      },
+      "phash_threshold_check": {
+        "max_hamming": 4,
+        "n_pairs": 293,
+        "n_corr64_ge_0.99": 0,
+        "median_corr64": 0.8549618466273912,
+        "label_conflicts": 119
+      },
+      "modes_by_label": {
+        "0": {
+          "RGB": 1140
+        },
+        "1": {
+          "RGB": 1140
+        }
+      },
+      "shortcut_probe": {
+        "geometry": {
+          "logreg": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          },
+          "gbm": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          }
+        },
+        "intensity_stats": {
+          "logreg": {
+            "validation_auroc": 0.760310864881502,
+            "test_auroc": 0.7825100030778702
+          },
+          "gbm": {
+            "validation_auroc": 0.7505386272699291,
+            "test_auroc": 0.729609110495537
+          }
+        },
+        "border_only": {
+          "logreg": {
+            "validation_auroc": 0.5093105570944907,
+            "test_auroc": 0.5918744228993537
+          },
+          "gbm": {
+            "validation_auroc": 0.6812480763311788,
+            "test_auroc": 0.5995690981840567
+          }
+        },
+        "all_tabular": {
+          "logreg": {
+            "validation_auroc": 0.760156971375808,
+            "test_auroc": 0.7825100030778701
+          },
+          "gbm": {
+            "validation_auroc": 0.7495383194829178,
+            "test_auroc": 0.7292243767313018
+          }
+        },
+        "mode": {
+          "logreg": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          },
+          "gbm": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          }
+        },
+        "thumbnail_8x8": {
+          "logreg": {
+            "validation_auroc": 0.7632348414896892,
+            "test_auroc": 0.8196945213911975
+          },
+          "gbm": {
+            "validation_auroc": 0.8235610957217606,
+            "test_auroc": 0.8287742382271468
+          }
+        }
+      }
+    },
+    "task2": {
+      "dataset_id": "Henryayay/POLCOVID_task2_70_10_20",
+      "revision": "6178041d37e25b33aaaf3d1356072dcbcc45af45",
+      "class_names": [
+        "Non-COVID Pneumonia",
+        "COVID-19"
+      ],
+      "split_sizes": {
+        "train": 1596,
+        "test": 456,
+        "validation": 228
+      },
+      "positive_fraction": {
+        "test": 0.5,
+        "train": 0.5,
+        "validation": 0.5
+      },
+      "n_images": 2280,
+      "unique_sha256": 2279,
+      "n_candidates": 2833,
+      "duplicates": {
+        "near_identical_or_exact": {
+          "n_pairs": 5,
+          "by_split_pair": {
+            "train-train": 4,
+            "train-validation": 1
+          },
+          "label_conflicts": 0,
+          "test_images_with_train_match": 0
+        },
+        "highly_similar_or_closer": {
+          "n_pairs": 25,
+          "by_split_pair": {
+            "train-train": 11,
+            "train-validation": 2,
+            "test-train": 10,
+            "test-test": 2
+          },
+          "label_conflicts": 2,
+          "test_images_with_train_match": 9
+        }
+      },
+      "phash_threshold_check": {
+        "max_hamming": 4,
+        "n_pairs": 176,
+        "n_corr64_ge_0.99": 5,
+        "median_corr64": 0.8539384334738734,
+        "label_conflicts": 61
+      },
+      "modes_by_label": {
+        "0": {
+          "RGB": 1140
+        },
+        "1": {
+          "RGB": 1140
+        }
+      },
+      "shortcut_probe": {
+        "geometry": {
+          "logreg": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          },
+          "gbm": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          }
+        },
+        "intensity_stats": {
+          "logreg": {
+            "validation_auroc": 0.7049092028316405,
+            "test_auroc": 0.6977916281932902
+          },
+          "gbm": {
+            "validation_auroc": 0.7089104339796861,
+            "test_auroc": 0.7677939365958757
+          }
+        },
+        "border_only": {
+          "logreg": {
+            "validation_auroc": 0.6288858110187749,
+            "test_auroc": 0.6554324407510003
+          },
+          "gbm": {
+            "validation_auroc": 0.6812096029547552,
+            "test_auroc": 0.6608668051708217
+          }
+        },
+        "all_tabular": {
+          "logreg": {
+            "validation_auroc": 0.7049861495844876,
+            "test_auroc": 0.6978493382579255
+          },
+          "gbm": {
+            "validation_auroc": 0.7098337950138504,
+            "test_auroc": 0.7677939365958757
+          }
+        },
+        "mode": {
+          "logreg": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          },
+          "gbm": {
+            "validation_auroc": 0.5,
+            "test_auroc": 0.5
+          }
+        },
+        "thumbnail_8x8": {
+          "logreg": {
+            "validation_auroc": 0.7189135118497999,
+            "test_auroc": 0.7800092336103417
+          },
+          "gbm": {
+            "validation_auroc": 0.7429978454909203,
+            "test_auroc": 0.7641774392120653
+          }
+        }
+      }
+    }
+  },
+  "cross_task": {
+    "n_task1_images_also_in_task2": 1140,
+    "task1_label_of_shared": {
+      "1": 1140
+    },
+    "split_mismatch_pairs": 1,
+    "split_mismatch_detail": {
+      "train->validation": 1
+    }
+  }
+}

@@ -1,0 +1,7 @@
+name: probe_rad_dino
+kind: linear_probe
+tasks: [task1, task2]
+encoder: rad_dino
+seeds: [0]
+train_fractions: [0.1, 0.25, 0.5, 1.0]
+perturbations: [border_mask, centre_mask, gamma_low, gamma_high, noise, jpeg]

@@ -1,0 +1,12 @@
+name: vlm_gemma3_icl_knn
+kind: vlm_icl
+tasks: [task1, task2]
+model_id: unsloth/gemma-3-4b-it
+model_revision: bf46152c47f5dd20b896357cb51abc4c03b8ee8c
+strategy: knn
+shots: [2, 4, 6, 8, 10]
+# Independent exemplar draws (random) or exemplar orderings (knn).
+seeds: [0, 1, 2, 3, 4]
+encoder: rad_dino
+max_similarity: 0.995
+content_free: none

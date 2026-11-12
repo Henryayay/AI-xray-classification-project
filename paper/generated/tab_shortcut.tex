@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\caption{AUROC of simple classifiers trained on low-level, largely non-anatomical image features (validation-selected between logistic regression and gradient boosting). All images are $512\times512$ RGB, so geometry and colour mode carry no signal.}
+\label{tab:shortcut}
+\begin{tabular}{lcccc}
+\toprule
+Features & \multicolumn{2}{c}{Task 1} & \multicolumn{2}{c}{Task 2}\\
+ & val & test & val & test\\
+\midrule
+Image geometry & 0.500 & 0.500 & 0.500 & 0.500 \\
+Border statistics & 0.681 & 0.600 & 0.681 & 0.661 \\
+Global intensity statistics & 0.760 & 0.783 & 0.709 & 0.768 \\
+$8\times8$ thumbnail & 0.824 & 0.829 & 0.743 & 0.764 \\
+Colour mode & 0.500 & 0.500 & 0.500 & 0.500 \\
+\bottomrule
+\end{tabular}
+\end{table}

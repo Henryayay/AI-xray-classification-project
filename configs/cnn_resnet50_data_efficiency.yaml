@@ -1,0 +1,15 @@
+name: cnn_resnet50_data_efficiency
+kind: cnn
+tasks: [task1, task2]
+arch: resnet50
+image_size: 224
+batch_size: 32
+epochs: 30
+patience: 7
+warmup_epochs: 1
+weight_decay: 1.0e-4
+# Reuses the learning rate selected on the full training set (configs/cnn_resnet50.yaml).
+lr_from: cnn_resnet50
+seeds: [0, 1, 2, 3, 4]
+train_fractions: [0.1, 0.25, 0.5]
+num_workers: 4

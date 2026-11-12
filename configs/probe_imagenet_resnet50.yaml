@@ -1,0 +1,7 @@
+name: probe_imagenet_resnet50
+kind: linear_probe
+tasks: [task1, task2]
+encoder: imagenet_resnet50
+seeds: [0]
+train_fractions: [0.1, 0.25, 0.5, 1.0]
+perturbations: [border_mask, centre_mask, gamma_low, gamma_high, noise, jpeg]

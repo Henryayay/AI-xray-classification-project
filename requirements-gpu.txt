@@ -1,0 +1,9 @@
+# GPU extras for VLM experiments (A100 Colab). Install after requirements.txt.
+# unsloth pins compatible trl/peft/bitsandbytes/xformers; these versions match the
+# original notebooks' environment log (unsloth 2026.1.3, transformers 4.57.3, trl 0.24.0).
+unsloth==2026.1.3
+trl==0.24.0
+peft>=0.13
+accelerate>=1.0
+torchxrayvision==1.3.4
+open_clip_torch>=2.24

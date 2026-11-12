@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this code or its results, please cite it as below."
+title: "Vision-language models vs. supervised CNNs for chest X-ray classification on POLCOVID: a pre-registered, reproducible comparison"
+type: software
+authors:
+  - name: "AI X-ray classification project contributors"
+repository-code: "https://github.com/Henryayay/AI-xray-classification-project"
+license: "unspecified"
+version: "0.1.0"
+date-released: "2026-10-11"
+keywords:
+  - chest X-ray
+  - vision-language models
+  - in-context learning
+  - LoRA
+  - COVID-19
+  - reproducibility
