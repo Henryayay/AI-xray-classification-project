@@ -1,0 +1,23 @@
+task,id,metric,status,tier
+task1,best_vlm_vs_best_supervised,auroc,missing conditions,primary
+task2,best_vlm_vs_best_supervised,auroc,missing conditions,primary
+task1,medgemma_vs_gemma3_lora,auroc,missing conditions,primary
+task2,medgemma_vs_gemma3_lora,auroc,missing conditions,primary
+task1,medgemma_vs_gemma3_zeroshot,auroc,missing conditions,primary
+task2,medgemma_vs_gemma3_zeroshot,auroc,missing conditions,primary
+task1,icl_knn_vs_random_gemma3,auroc,missing conditions,primary
+task2,icl_knn_vs_random_gemma3,auroc,missing conditions,primary
+task1,calibration_valcentered_vs_raw_gemma3_icl_random,balanced_accuracy,missing conditions,primary
+task2,calibration_valcentered_vs_raw_gemma3_icl_random,balanced_accuracy,missing conditions,primary
+task1,icl_knn_vs_random_medgemma,auroc,missing conditions,secondary
+task2,icl_knn_vs_random_medgemma,auroc,missing conditions,secondary
+task1,contextual_vs_raw_gemma3_icl_random,balanced_accuracy,missing conditions,secondary
+task2,contextual_vs_raw_gemma3_icl_random,balanced_accuracy,missing conditions,secondary
+task1,calibration_valcentered_vs_raw_gemma3_zeroshot,balanced_accuracy,missing conditions,secondary
+task2,calibration_valcentered_vs_raw_gemma3_zeroshot,balanced_accuracy,missing conditions,secondary
+task1,gemma3_lora_vs_best_supervised,auroc,missing conditions,secondary
+task2,gemma3_lora_vs_best_supervised,auroc,missing conditions,secondary
+task1,ensemble_vs_best_vlm,auroc,missing conditions,secondary
+task2,ensemble_vs_best_vlm,auroc,missing conditions,secondary
+task1,ensemble_vs_best_supervised,auroc,missing conditions,secondary
+task2,ensemble_vs_best_supervised,auroc,missing conditions,secondary

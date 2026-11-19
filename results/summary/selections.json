@@ -1,0 +1,40 @@
+{
+  "task1": {
+    "supervised": {
+      "experiment": "probe_rad_dino",
+      "train_fraction": 1.0,
+      "shots": -1,
+      "val_auroc_mean": 0.9262080640196985,
+      "n_candidates": 2
+    },
+    "vlm_any": null,
+    "gemma3_lora": null,
+    "medgemma_lora": null,
+    "gemma3_zeroshot": null,
+    "medgemma_zeroshot": null,
+    "gemma3_icl_random": null,
+    "gemma3_icl_knn": null,
+    "medgemma_icl_random": null,
+    "medgemma_icl_knn": null,
+    "ensemble": null
+  },
+  "task2": {
+    "supervised": {
+      "experiment": "probe_rad_dino",
+      "train_fraction": 1.0,
+      "shots": -1,
+      "val_auroc_mean": 0.9071252693136349,
+      "n_candidates": 2
+    },
+    "vlm_any": null,
+    "gemma3_lora": null,
+    "medgemma_lora": null,
+    "gemma3_zeroshot": null,
+    "medgemma_zeroshot": null,
+    "gemma3_icl_random": null,
+    "gemma3_icl_knn": null,
+    "medgemma_icl_random": null,
+    "medgemma_icl_knn": null,
+    "ensemble": null
+  }
+}

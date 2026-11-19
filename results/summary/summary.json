@@ -1,0 +1,204 @@
+{
+  "n_runs": 16,
+  "tasks": [
+    "task1",
+    "task2"
+  ],
+  "selections": {
+    "task1": {
+      "supervised": {
+        "experiment": "probe_rad_dino",
+        "train_fraction": 1.0,
+        "shots": -1,
+        "val_auroc_mean": 0.9262080640196985,
+        "n_candidates": 2
+      },
+      "vlm_any": null,
+      "gemma3_lora": null,
+      "medgemma_lora": null,
+      "gemma3_zeroshot": null,
+      "medgemma_zeroshot": null,
+      "gemma3_icl_random": null,
+      "gemma3_icl_knn": null,
+      "medgemma_icl_random": null,
+      "medgemma_icl_knn": null,
+      "ensemble": null
+    },
+    "task2": {
+      "supervised": {
+        "experiment": "probe_rad_dino",
+        "train_fraction": 1.0,
+        "shots": -1,
+        "val_auroc_mean": 0.9071252693136349,
+        "n_candidates": 2
+      },
+      "vlm_any": null,
+      "gemma3_lora": null,
+      "medgemma_lora": null,
+      "gemma3_zeroshot": null,
+      "medgemma_zeroshot": null,
+      "gemma3_icl_random": null,
+      "gemma3_icl_knn": null,
+      "medgemma_icl_random": null,
+      "medgemma_icl_knn": null,
+      "ensemble": null
+    }
+  },
+  "ensembles": [],
+  "comparisons": [
+    {
+      "task": "task1",
+      "id": "best_vlm_vs_best_supervised",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task2",
+      "id": "best_vlm_vs_best_supervised",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task1",
+      "id": "medgemma_vs_gemma3_lora",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task2",
+      "id": "medgemma_vs_gemma3_lora",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task1",
+      "id": "medgemma_vs_gemma3_zeroshot",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task2",
+      "id": "medgemma_vs_gemma3_zeroshot",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task1",
+      "id": "icl_knn_vs_random_gemma3",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task2",
+      "id": "icl_knn_vs_random_gemma3",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task1",
+      "id": "calibration_valcentered_vs_raw_gemma3_icl_random",
+      "metric": "balanced_accuracy",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task2",
+      "id": "calibration_valcentered_vs_raw_gemma3_icl_random",
+      "metric": "balanced_accuracy",
+      "status": "missing conditions",
+      "tier": "primary"
+    },
+    {
+      "task": "task1",
+      "id": "icl_knn_vs_random_medgemma",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task2",
+      "id": "icl_knn_vs_random_medgemma",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task1",
+      "id": "contextual_vs_raw_gemma3_icl_random",
+      "metric": "balanced_accuracy",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task2",
+      "id": "contextual_vs_raw_gemma3_icl_random",
+      "metric": "balanced_accuracy",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task1",
+      "id": "calibration_valcentered_vs_raw_gemma3_zeroshot",
+      "metric": "balanced_accuracy",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task2",
+      "id": "calibration_valcentered_vs_raw_gemma3_zeroshot",
+      "metric": "balanced_accuracy",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task1",
+      "id": "gemma3_lora_vs_best_supervised",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task2",
+      "id": "gemma3_lora_vs_best_supervised",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task1",
+      "id": "ensemble_vs_best_vlm",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task2",
+      "id": "ensemble_vs_best_vlm",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task1",
+      "id": "ensemble_vs_best_supervised",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    },
+    {
+      "task": "task2",
+      "id": "ensemble_vs_best_supervised",
+      "metric": "auroc",
+      "status": "missing conditions",
+      "tier": "secondary"
+    }
+  ]
+}
